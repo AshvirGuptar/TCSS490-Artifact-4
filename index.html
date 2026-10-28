@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artifact 04 - Portfolio Trajectory Simulator | Ashvir Guptar</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- FontAwesome Icons & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200 antialiased selection:bg-blue-500 selection:text-white">
+
+  <!-- Navigation Header -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Brand / Return Link -->
+        <div class="flex items-center gap-3">
+          <a href="https://ashvirguptar.github.io/TCSS490-portfolio/" 
+             class="w-9 h-9 rounded-lg bg-blue-600 hover:bg-blue-500 transition-colors flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-500/20"
+             title="Return to Main Course Portfolio">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-gray-900 dark:text-white text-lg tracking-tight">Portfolio Trajectory Simulator</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">Artifact 04</span>
+            </div>
+            <span class="text-xs text-gray-500 dark:text-gray-400 block -mt-0.5 font-mono">TCSS 490 &bull; Ashvir Guptar</span>
+          </div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="flex items-center gap-3">
+          <a href="https://github.com/AshvirGuptar/TCSS490-portfolio/blob/main/log.md" 
+             target="_blank" 
+             rel="noopener noreferrer" 
+             class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 transition-all">
+            <i class="fa-solid fa-microchip text-blue-500"></i>
+            <span>Development Log</span>
+          </a>
+
+          <!-- Dark / Light Theme Toggle -->
+          <button id="themeToggle" 
+                  type="button" 
+                  aria-label="Toggle Theme" 
+                  class="w-9 h-9 rounded-lg flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-all">
+            <i class="fa-solid fa-moon text-sm dark:hidden"></i>
+            <i class="fa-solid fa-sun text-sm hidden dark:block text-amber-400"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Hero / Intro Banner -->
+    <div class="mb-8 bg-gradient-to-r from-blue-900/10 via-indigo-900/10 to-transparent p-6 rounded-2xl border border-blue-200/50 dark:border-blue-800/40 relative overflow-hidden">
+      <div class="max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+          Real-Time Portfolio Trajectory Engine
+        </h1>
+        <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+          100% client-side compounding interest calculation engine modeled for real-world brokerage account growth forecasting. Evaluate investment timelines, interest velocity, and goal thresholds dynamically.
+        </p>
+      </div>
+
+      <!-- Quick Preset Selector Buttons -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Presets:</span>
+        <button id="btnPresetCoworker" 
+                class="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-user-shield"></i>
+          <span>Co-Worker Baseline ($45k / $800 mo)</span>
+        </button>
+        <button id="btnPresetAggressive" 
+                class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-rocket"></i>
+          <span>Aggressive Growth ($25k / $1.5k mo)</span>
+        </button>
+        <button id="btnPresetConservative" 
+                class="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-600 hover:bg-amber-500 text-white transition-all shadow-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-piggy-bank"></i>
+          <span>Conservative Baseline ($10k / $400 mo)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid Layout: Controls (Left) & Real-Time Projections (Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+      <!-- Left Column: Parameters Input Panel (5 cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm">
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-blue-500"></i>
+            <span>Investment Parameters</span>
+          </h2>
+
+          <form id="calculatorForm" class="space-y-5" onsubmit="event.preventDefault();">
+            
+            <!-- Starting Principal -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label for="initialPrincipal" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  Starting Principal ($)
+                </label>
+                <span id="initialPrincipalValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">$45,000</span>
+              </div>
+              <input type="number" id="initialPrincipal" min="0" max="1000000" step="1000" value="45000"
+                     class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+            </div>
+
+            <!-- Monthly Contribution -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label for="monthlyContribution" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  Monthly Contribution ($)
+                </label>
+                <span id="monthlyContributionValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">$800</span>
+              </div>
+              <input type="number" id="monthlyContribution" min="0" max="20000" step="50" value="800"
+                     class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+            </div>
+
+            <!-- Annual Rate of Return -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label for="annualReturn" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  Expected Annual Return (%)
+                </label>
+                <span id="annualReturnValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">8.0%</span>
+              </div>
+              <input type="range" id="annualReturn" min="1" max="20" step="0.5" value="8.0"
+                     class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-600" />
+            </div>
+
+            <!-- Timeline Horizon (Years) -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label for="timelineYears" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  Time Horizon (Years)
+                </label>
+                <span id="timelineYearsValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">25 Years</span>
+              </div>
+              <input type="range" id="timelineYears" min="1" max="50" step="1" value="25"
+                     class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-600" />
+            </div>
+
+            <!-- Target Goal Amount -->
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label for="targetGoal" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  Target Portfolio Goal ($)
+                </label>
+                <span id="targetGoalValue" class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">$1,000,000</span>
+              </div>
+              <input type="number" id="targetGoal" min="10000" max="10000000" step="25000" value="1000000"
+                     class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Local Storage Vault Management Card -->
+        <div class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm">
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center justify-between">
+            <span class="flex items-center gap-2">
+              <i class="fa-solid fa-box-archive text-blue-500"></i>
+              <span>Saved Scenario Vault</span>
+            </span>
+            <span id="vaultCount" class="text-xs font-mono px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400">0 Saved</span>
+          </h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+            Save current parameters to local browser storage for scenario comparison.
+          </p>
+
+          <div class="flex gap-2 mb-4">
+            <input type="text" id="scenarioName" placeholder="Scenario name (e.g., Co-Worker 401k)" 
+                   class="flex-1 px-3 py-2 text-xs rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <button id="btnSaveScenario" class="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5">
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span>Save</span>
+            </button>
+          </div>
+
+          <!-- Saved Scenarios List -->
+          <div id="savedScenariosList" class="space-y-2 max-h-48 overflow-y-auto pr-1 text-xs">
+            <p class="text-gray-400 text-center py-4 font-mono">No scenarios saved yet in local storage.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Real-Time Metric Display & Trajectory Breakdown (7 cols) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- Metrics Overview Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+          <!-- Net Future Value -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/80 shadow-sm relative overflow-hidden">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-1">
+              Projected Portfolio Value
+            </span>
+            <div id="metricFutureValue" class="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 font-mono">
+              $0.00
+            </div>
+            <div class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+              <span>Horizon:</span>
+              <span id="metricHorizonLabel" class="font-mono font-semibold text-gray-700 dark:text-gray-300">25 Years</span>
+            </div>
+          </div>
+
+          <!-- Goal Achievement Metric -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/80 shadow-sm relative overflow-hidden">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-1">
+              Estimated Time To Target Goal
+            </span>
+            <div id="metricGoalTime" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
+              --
+            </div>
+            <div class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+              <span>Target:</span>
+              <span id="metricGoalTargetLabel" class="font-mono font-semibold text-gray-700 dark:text-gray-300">$1,000,000</span>
+            </div>
+          </div>
+
+          <!-- Total Contributions -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/80 shadow-sm">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-1">
+              Total Out-of-Pocket Principal
+            </span>
+            <div id="metricTotalContributions" class="text-xl font-bold text-gray-900 dark:text-white font-mono">
+              $0.00
+            </div>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Starting balance + monthly deposits</p>
+          </div>
+
+          <!-- Compound Interest Earned -->
+          <div class="p-5 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/80 shadow-sm">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-1">
+              Total Compound Growth Earned
+            </span>
+            <div id="metricTotalInterest" class="text-xl font-bold text-indigo-600 dark:text-indigo-400 font-mono">
+              $0.00
+            </div>
+            <p id="metricGrowthRatio" class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-mono font-semibold">
+              -- % from interest
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Visual Compound Ratio Progress Bar -->
+        <div class="bg-white dark:bg-gray-800/80 p-5 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm">
+          <div class="flex justify-between items-center text-xs font-semibold mb-2">
+            <span class="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> Principal Invested
+            </span>
+            <span class="text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-indigo-500 inline-block"></span> Compound Growth
+            </span>
+          </div>
+          <div class="w-full h-4 bg-gray-100 dark:bg-gray-900 rounded-full overflow-hidden flex">
+            <div id="barPrincipal" class="bg-blue-500 h-full transition-all duration-300" style="width: 50%;"></div>
+            <div id="barInterest" class="bg-indigo-500 h-full transition-all duration-300" style="width: 50%;"></div>
+          </div>
+        </div>
+
+        <!-- Milestone Trajectory Schedule Table -->
+        <div class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <i class="fa-solid fa-table text-blue-500"></i>
+              <span>Year-by-Year Growth Breakdown</span>
+            </h2>
+            <span class="text-xs font-mono text-gray-500 dark:text-gray-400">Monthly Compounding</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs font-mono">
+              <thead>
+                <tr class="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
+                  <th class="pb-3 font-semibold">Year</th>
+                  <th class="pb-3 font-semibold">Total Invested</th>
+                  <th class="pb-3 font-semibold">Interest Earned</th>
+                  <th class="pb-3 font-semibold text-right">End Balance</th>
+                </tr>
+              </thead>
+              <tbody id="trajectoryTableBody" class="divide-y divide-gray-100 dark:divide-gray-800/60">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-16 border-t border-gray-200 dark:border-gray-800 py-8 text-center text-xs text-gray-500 dark:text-gray-400">
+    <div class="max-w-7xl mx-auto px-4">
+      <p>TCSS 490 Artifact 04 &bull; Designed & Built by Ashvir Guptar</p>
+      <p class="mt-1 text-gray-400 dark:text-gray-600 font-mono">Real-Time Compound Interest Formula Engine</p>
+    </div>
+  </footer>
+
+  <!-- Real-Time Calculation & UI Script -->
+  <script>
+    // Theme Toggle Functionality
+    const themeToggleBtn = document.getElementById('themeToggle');
+    themeToggleBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    // Form DOM Elements
+    const inputPrincipal = document.getElementById('initialPrincipal');
+    const inputContribution = document.getElementById('monthlyContribution');
+    const inputReturn = document.getElementById('annualReturn');
+    const inputYears = document.getElementById('timelineYears');
+    const inputGoal = document.getElementById('targetGoal');
+
+    // Label Value Display Elements
+    const lblPrincipal = document.getElementById('initialPrincipalValue');
+    const lblContribution = document.getElementById('monthlyContributionValue');
+    const lblReturn = document.getElementById('annualReturnValue');
+    const lblYears = document.getElementById('timelineYearsValue');
+    const lblGoal = document.getElementById('targetGoalValue');
+
+    // Metric Displays
+    const metricFV = document.getElementById('metricFutureValue');
+    const metricHorizonLabel = document.getElementById('metricHorizonLabel');
+    const metricGoalTime = document.getElementById('metricGoalTime');
+    const metricGoalTargetLabel = document.getElementById('metricGoalTargetLabel');
+    const metricTotalContrib = document.getElementById('metricTotalContributions');
+    const metricTotalInterest = document.getElementById('metricTotalInterest');
+    const metricGrowthRatio = document.getElementById('metricGrowthRatio');
+
+    // Visual Progress Bar
+    const barPrincipal = document.getElementById('barPrincipal');
+    const barInterest = document.getElementById('barInterest');
+
+    // Table Body
+    const tableBody = document.getElementById('trajectoryTableBody');
+
+    // Local Storage Vault Elements
+    const inputScenarioName = document.getElementById('scenarioName');
+    const btnSaveScenario = document.getElementById('btnSaveScenario');
+    const savedScenariosList = document.getElementById('savedScenariosList');
+    const vaultCount = document.getElementById('vaultCount');
+
+    // Helper: Currency Formatter
+    const formatCurrency = (val) => {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0
+      }).format(val);
+    };
+
+    // Core Compound Interest Mathematical Calculation Engine
+    function calculateTrajectory() {
+      const PV = parseFloat(inputPrincipal.value) || 0;
+      const PMT = parseFloat(inputContribution.value) || 0;
+      const annualRate = (parseFloat(inputReturn.value) || 0) / 100;
+      const r = annualRate / 12; // Monthly rate
+      const years = parseInt(inputYears.value) || 1;
+      const targetGoal = parseFloat(inputGoal.value) || 0;
+
+      // Update Label text
+      lblPrincipal.textContent = formatCurrency(PV);
+      lblContribution.textContent = formatCurrency(PMT);
+      lblReturn.textContent = `${annualReturn.value}%`;
+      lblYears.textContent = `${years} ${years === 1 ? 'Year' : 'Years'}`;
+      lblGoal.textContent = formatCurrency(targetGoal);
+
+      let currentBalance = PV;
+      let totalContributions = PV;
+      let yearBreakdown = [];
+
+      let monthReachedGoal = null;
+
+      const totalMonths = years * 12;
+
+      for (let m = 1; m <= totalMonths; m++) {
+        // Compound current balance for 1 month
+        currentBalance = currentBalance * (1 + r) + PMT;
+        totalContributions += PMT;
+
+        // Check when Target Goal is reached
+        if (monthReachedGoal === null && currentBalance >= targetGoal) {
+          monthReachedGoal = m;
+        }
+
+        // Record yearly metrics
+        if (m % 12 === 0) {
+          const yearNum = m / 12;
+          const totalInterestYear = currentBalance - totalContributions;
+          yearBreakdown.push({
+            year: yearNum,
+            invested: totalContributions,
+            interest: Math.max(0, totalInterestYear),
+            balance: currentBalance
+          });
+        }
+      }
+
+      const netFutureValue = currentBalance;
+      const netInterest = netFutureValue - totalContributions;
+
+      // Update UI Primary Metrics
+      metricFV.textContent = formatCurrency(netFutureValue);
+      metricHorizonLabel.textContent = `${years} Years`;
+      metricTotalContrib.textContent = formatCurrency(totalContributions);
+      metricTotalInterest.textContent = formatCurrency(Math.max(0, netInterest));
+
+      // Calculate Growth Ratio Percentage
+      const growthPercent = netFutureValue > 0 ? ((netInterest / netFutureValue) * 100).toFixed(1) : 0;
+      metricGrowthRatio.textContent = `${growthPercent}% of total portfolio came from interest`;
+
+      // Update Visual Progress Bar Ratio
+      const principalPercent = netFutureValue > 0 ? (totalContributions / netFutureValue) * 100 : 100;
+      const interestPercent = Math.max(0, 100 - principalPercent);
+      barPrincipal.style.width = `${Math.min(100, Math.max(0, principalPercent))}%`;
+      barInterest.style.width = `${Math.min(100, Math.max(0, interestPercent))}%`;
+
+      // Goal Time Target Metric
+      metricGoalTargetLabel.textContent = formatCurrency(targetGoal);
+      if (monthReachedGoal !== null) {
+        const goalY = Math.floor(monthReachedGoal / 12);
+        const goalM = monthReachedGoal % 12;
+        if (goalY === 0) {
+          metricGoalTime.textContent = `${goalM} mos`;
+        } else if (goalM === 0) {
+          metricGoalTime.textContent = `${goalY} yrs`;
+        } else {
+          metricGoalTime.textContent = `${goalY}y ${goalM}m`;
+        }
+      } else {
+        metricGoalTime.textContent = `> ${years} yrs`;
+      }
+
+      // Populate Breakdown Table
+      tableBody.innerHTML = '';
+      yearBreakdown.forEach(item => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors';
+        row.innerHTML = `
+          <td class="py-2.5 text-gray-700 dark:text-gray-300 font-semibold">Yr ${item.year}</td>
+          <td class="py-2.5 text-gray-600 dark:text-gray-400">${formatCurrency(item.invested)}</td>
+          <td class="py-2.5 text-indigo-600 dark:text-indigo-400">+${formatCurrency(item.interest)}</td>
+          <td class="py-2.5 text-right font-bold text-gray-900 dark:text-white">${formatCurrency(item.balance)}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Attach Event Listeners to Inputs for Real-Time Recalculation
+    [inputPrincipal, inputContribution, inputReturn, inputYears, inputGoal].forEach(input => {
+      input.addEventListener('input', calculateTrajectory);
+    });
+
+    // Preset Button Handlers
+    document.getElementById('btnPresetCoworker').addEventListener('click', () => {
+      inputPrincipal.value = 45000;
+      inputContribution.value = 800;
+      inputReturn.value = 8.0;
+      inputYears.value = 25;
+      inputGoal.value = 1000000;
+      calculateTrajectory();
+    });
+
+    document.getElementById('btnPresetAggressive').addEventListener('click', () => {
+      inputPrincipal.value = 25000;
+      inputContribution.value = 1500;
+      inputReturn.value = 11.0;
+      inputYears.value = 20;
+      inputGoal.value = 2000000;
+      calculateTrajectory();
+    });
+
+    document.getElementById('btnPresetConservative').addEventListener('click', () => {
+      inputPrincipal.value = 10000;
+      inputContribution.value = 400;
+      inputReturn.value = 6.0;
+      inputYears.value = 30;
+      inputGoal.value = 500000;
+      calculateTrajectory();
+    });
+
+    // LocalStorage Scenario Vault Functionality
+    const STORAGE_KEY = 'tcss490_artifact4_vault';
+
+    function loadSavedScenarios() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const scenarios = raw ? JSON.parse(raw) : [];
+      vaultCount.textContent = `${scenarios.length} Saved`;
+
+      savedScenariosList.innerHTML = '';
+      if (scenarios.length === 0) {
+        savedScenariosList.innerHTML = '<p class="text-gray-400 text-center py-4 font-mono">No scenarios saved yet in local storage.</p>';
+        return;
+      }
+
+      scenarios.forEach((s, index) => {
+        const item = document.createElement('div');
+        item.className = 'flex items-center justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/60 hover:border-blue-500/50 transition-all';
+        item.innerHTML = `
+          <div>
+            <div class="font-bold text-gray-900 dark:text-white">${s.name}</div>
+            <div class="text-[10px] font-mono text-gray-500">
+              Start: ${formatCurrency(s.principal)} | Mo: ${formatCurrency(s.monthly)} | Return: ${s.rate}%
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="applyScenario(${index})" class="px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-semibold text-[10px] hover:bg-blue-200">Load</button>
+            <button onclick="deleteScenario(${index})" class="p-1 text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        savedScenariosList.appendChild(item);
+      });
+    }
+
+    btnSaveScenario.addEventListener('click', () => {
+      const name = inputScenarioName.value.trim() || `Scenario ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+      const scenario = {
+        name,
+        principal: parseFloat(inputPrincipal.value) || 0,
+        monthly: parseFloat(inputContribution.value) || 0,
+        rate: parseFloat(inputReturn.value) || 0,
+        years: parseInt(inputYears.value) || 1,
+        goal: parseFloat(inputGoal.value) || 0
+      };
+
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const scenarios = raw ? JSON.parse(raw) : [];
+      scenarios.unshift(scenario);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(scenarios));
+
+      inputScenarioName.value = '';
+      loadSavedScenarios();
+    });
+
+    window.applyScenario = (index) => {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const scenarios = raw ? JSON.parse(raw) : [];
+      if (scenarios[index]) {
+        const s = scenarios[index];
+        inputPrincipal.value = s.principal;
+        inputContribution.value = s.monthly;
+        inputReturn.value = s.rate;
+        inputYears.value = s.years;
+        inputGoal.value = s.goal;
+        calculateTrajectory();
+      }
+    };
+
+    window.deleteScenario = (index) => {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      let scenarios = raw ? JSON.parse(raw) : [];
+      scenarios.splice(index, 1);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(scenarios));
+      loadSavedScenarios();
+    };
+
+    // Initial Execution on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      calculateTrajectory();
+      loadSavedScenarios();
+    });
+  </script>
+</body>
+</html>
