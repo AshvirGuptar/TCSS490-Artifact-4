@@ -1,6 +1,6 @@
 # AI Prompt Log & Development Activity - Artifact 04
 ## Project: Investment Goal & Trajectory Calculator
-## Student: Ashvir Guptar
+## Members: Vanessa and Ashvir
 
 This document records the prompt engineering and development workflow utilized to design, build, and test the Investment Goal & Trajectory Calculator for TCSS 490 (Artifact 04).
 
