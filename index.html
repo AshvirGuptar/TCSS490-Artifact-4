@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Artifact 04 - Portfolio Trajectory Simulator | Ashvir Guptar</title>
+  <title>Artifact 4 - Portfolio Trajectory Simulator | Ashvir Guptar</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -47,31 +47,31 @@
   <!-- Navigation Header -->
   <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between py-3 sm:py-0 sm:h-16 gap-3 sm:gap-0">
         <!-- Brand / Repository Link -->
         <div class="flex items-center gap-3">
           <a href="https://github.com/AshvirGuptar/TCSS490-Artifact-4" 
              target="_blank"
              rel="noopener noreferrer"
-             class="w-9 h-9 rounded-lg bg-blue-600 hover:bg-blue-500 transition-colors flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-500/20"
+             class="w-9 h-9 rounded-lg bg-blue-600 hover:bg-blue-500 transition-colors flex items-center justify-center text-white font-bold text-sm shadow-md shadow-blue-500/20 shrink-0"
              title="View Artifact 4 Repository on GitHub">
             <i class="fa-brands fa-github text-base"></i>
           </a>
           <div>
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-gray-900 dark:text-white text-lg tracking-tight">Portfolio Trajectory Simulator</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">Artifact 04</span>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-bold text-gray-900 dark:text-white text-base sm:text-lg tracking-tight">Portfolio Trajectory Simulator</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">Artifact 4</span>
             </div>
             <span class="text-xs text-gray-500 dark:text-gray-400 block -mt-0.5 font-mono">TCSS 490 &bull; Vanessa and Ashvir</span>
           </div>
         </div>
 
         <!-- Header Actions -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center justify-between sm:justify-end gap-2.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-800">
           <a href="https://github.com/AshvirGuptar/TCSS490-portfolio/blob/main/log.md" 
              target="_blank" 
              rel="noopener noreferrer" 
-             class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 transition-all">
+             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 transition-all">
             <i class="fa-solid fa-microchip text-blue-500"></i>
             <span>Development Log</span>
           </a>
@@ -80,7 +80,7 @@
           <button id="themeToggle" 
                   type="button" 
                   aria-label="Toggle Theme" 
-                  class="w-9 h-9 rounded-lg flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-all">
+                  class="w-9 h-9 rounded-lg flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-all shrink-0">
             <i class="fa-solid fa-moon text-sm dark:hidden"></i>
             <i class="fa-solid fa-sun text-sm hidden dark:block text-amber-400"></i>
           </button>
