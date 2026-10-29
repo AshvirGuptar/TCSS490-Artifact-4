@@ -38,12 +38,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
+    body { font-family: 'Inter', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200 antialiased selection:bg-blue-500 selection:text-white">
@@ -103,7 +99,7 @@
           Real-Time Portfolio Trajectory Engine
         </h1>
         <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-          100% client-side compounding interest calculation engine modeled for real-world brokerage account growth forecasting. Evaluate investment timelines, interest velocity, and goal thresholds dynamically.
+          100% client-side compounding interest calculation engine modeled for real-world brokerage account growth forecasting. Evaluate investment timelines, inflation-adjusted purchasing power, and goal thresholds dynamically.
         </p>
       </div>
 
@@ -133,44 +129,38 @@
 
       <!-- Left Column: Parameters Input Panel (5 cols) -->
       <div class="lg:col-span-5 space-y-6">
-        <div class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm">
-          <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <div class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm space-y-5">
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
             <i class="fa-solid fa-sliders text-blue-500"></i>
             <span>Investment Parameters</span>
           </h2>
 
-          <form id="calculatorForm" class="space-y-5" onsubmit="event.preventDefault();">
+          <form id="calculatorForm" class="space-y-4" onsubmit="event.preventDefault();">
             
             <!-- Starting Principal -->
             <div>
-              <div class="flex justify-between items-center mb-1.5">
-                <label for="initialPrincipal" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                  Starting Principal ($)
-                </label>
+              <div class="flex justify-between items-center mb-1">
+                <label for="initialPrincipal" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Starting Principal ($)</label>
                 <span id="initialPrincipalValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">$45,000</span>
               </div>
               <input type="number" id="initialPrincipal" min="0" max="1000000" step="1000" value="45000"
-                     class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+                     class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
 
             <!-- Monthly Contribution -->
             <div>
-              <div class="flex justify-between items-center mb-1.5">
-                <label for="monthlyContribution" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                  Monthly Contribution ($)
-                </label>
+              <div class="flex justify-between items-center mb-1">
+                <label for="monthlyContribution" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Monthly Contribution ($)</label>
                 <span id="monthlyContributionValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">$800</span>
               </div>
               <input type="number" id="monthlyContribution" min="0" max="20000" step="50" value="800"
-                     class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+                     class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
 
             <!-- Annual Rate of Return -->
             <div>
-              <div class="flex justify-between items-center mb-1.5">
-                <label for="annualReturn" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                  Expected Annual Return (%)
-                </label>
+              <div class="flex justify-between items-center mb-1">
+                <label for="annualReturn" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Expected Annual Return (%)</label>
                 <span id="annualReturnValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">8.0%</span>
               </div>
               <input type="range" id="annualReturn" min="1" max="20" step="0.5" value="8.0"
@@ -179,10 +169,8 @@
 
             <!-- Timeline Horizon (Years) -->
             <div>
-              <div class="flex justify-between items-center mb-1.5">
-                <label for="timelineYears" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                  Time Horizon (Years)
-                </label>
+              <div class="flex justify-between items-center mb-1">
+                <label for="timelineYears" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Time Horizon (Years)</label>
                 <span id="timelineYearsValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">25 Years</span>
               </div>
               <input type="range" id="timelineYears" min="1" max="50" step="1" value="25"
@@ -191,14 +179,39 @@
 
             <!-- Target Goal Amount -->
             <div>
-              <div class="flex justify-between items-center mb-1.5">
-                <label for="targetGoal" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                  Target Portfolio Goal ($)
-                </label>
+              <div class="flex justify-between items-center mb-1">
+                <label for="targetGoal" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Target Portfolio Goal ($)</label>
                 <span id="targetGoalValue" class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">$1,000,000</span>
               </div>
               <input type="number" id="targetGoal" min="10000" max="10000000" step="25000" value="1000000"
-                     class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+                     class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+
+            <!-- ENHANCEMENT 1: Inflation Rate Toggle -->
+            <div class="pt-2 border-t border-gray-200 dark:border-gray-700/60">
+              <div class="flex justify-between items-center mb-1">
+                <label for="inflationRate" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                  <i class="fa-solid fa-scale-unbalanced text-amber-500"></i> Estimated Annual Inflation (%)
+                </label>
+                <span id="inflationRateValue" class="text-xs font-mono font-bold text-amber-500">2.5%</span>
+              </div>
+              <input type="range" id="inflationRate" min="0" max="8" step="0.5" value="2.5"
+                     class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-amber-500" />
+            </div>
+
+            <!-- ENHANCEMENT 2: What-If Monthly Boost Accelerator -->
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label for="whatIfBoost" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                  <i class="fa-solid fa-bolt text-emerald-500"></i> "What-If" Monthly Boost ($)
+                </label>
+                <span id="whatIfBoostValue" class="text-xs font-mono font-bold text-emerald-500">+$200/mo</span>
+              </div>
+              <input type="number" id="whatIfBoost" min="0" max="5000" step="50" value="200"
+                     class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              <div id="whatIfTimeSaved" class="mt-1 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
+                --
+              </div>
             </div>
 
           </form>
@@ -214,10 +227,10 @@
             <span id="vaultCount" class="text-xs font-mono px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400">0 Saved</span>
           </h2>
           <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
-            Save current parameters to local browser storage for scenario comparison.
+            Save current parameters to local browser storage or export data to CSV.
           </p>
 
-          <div class="flex gap-2 mb-4">
+          <div class="flex gap-2 mb-3">
             <input type="text" id="scenarioName" placeholder="Scenario name (e.g., Co-Worker 401k)" 
                    class="flex-1 px-3 py-2 text-xs rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             <button id="btnSaveScenario" class="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5">
@@ -226,8 +239,14 @@
             </button>
           </div>
 
+          <!-- CSV Export Button -->
+          <button id="btnExportCsv" class="w-full mb-4 py-2 px-3 rounded-xl text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 transition-all flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-file-csv text-emerald-500"></i>
+            <span>Export Saved Scenarios to CSV</span>
+          </button>
+
           <!-- Saved Scenarios List -->
-          <div id="savedScenariosList" class="space-y-2 max-h-48 overflow-y-auto pr-1 text-xs">
+          <div id="savedScenariosList" class="space-y-2 max-h-40 overflow-y-auto pr-1 text-xs">
             <p class="text-gray-400 text-center py-4 font-mono">No scenarios saved yet in local storage.</p>
           </div>
         </div>
@@ -246,6 +265,10 @@
             </span>
             <div id="metricFutureValue" class="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 font-mono">
               $0.00
+            </div>
+            <!-- Inflation Adjusted Subtext -->
+            <div id="metricInflationVal" class="mt-1 text-xs font-mono text-amber-500 font-semibold">
+              -- in today's dollars
             </div>
             <div class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
               <span>Horizon:</span>
@@ -293,19 +316,21 @@
 
         </div>
 
-        <!-- Visual Compound Ratio Progress Bar -->
-        <div class="bg-white dark:bg-gray-800/80 p-5 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm">
-          <div class="flex justify-between items-center text-xs font-semibold mb-2">
-            <span class="text-gray-600 dark:text-gray-400 flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> Principal Invested
-            </span>
-            <span class="text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-indigo-500 inline-block"></span> Compound Growth
-            </span>
+        <!-- ENHANCEMENT 3: Visual SVG Growth Chart -->
+        <div class="bg-white dark:bg-gray-800/80 p-5 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
+              <i class="fa-solid fa-chart-area text-blue-500"></i> Trajectory Growth Curve
+            </h3>
+            <div class="flex items-center gap-3 text-[10px] font-mono font-semibold">
+              <span class="flex items-center gap-1 text-blue-500"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Balance</span>
+              <span class="flex items-center gap-1 text-gray-400"><span class="w-2 h-2 rounded-full bg-gray-400"></span> Principal</span>
+            </div>
           </div>
-          <div class="w-full h-4 bg-gray-100 dark:bg-gray-900 rounded-full overflow-hidden flex">
-            <div id="barPrincipal" class="bg-blue-500 h-full transition-all duration-300" style="width: 50%;"></div>
-            <div id="barInterest" class="bg-indigo-500 h-full transition-all duration-300" style="width: 50%;"></div>
+          <div class="w-full h-36 bg-gray-50 dark:bg-gray-900/50 rounded-xl overflow-hidden p-2 relative flex items-end">
+            <svg id="growthSvg" class="w-full h-full overflow-visible" viewBox="0 0 500 120" preserveAspectRatio="none">
+              <!-- Dynamically drawn path -->
+            </svg>
           </div>
         </div>
 
@@ -429,6 +454,8 @@
     const inputReturn = document.getElementById('annualReturn');
     const inputYears = document.getElementById('timelineYears');
     const inputGoal = document.getElementById('targetGoal');
+    const inputInflation = document.getElementById('inflationRate');
+    const inputBoost = document.getElementById('whatIfBoost');
 
     // Label Value Display Elements
     const lblPrincipal = document.getElementById('initialPrincipalValue');
@@ -436,26 +463,28 @@
     const lblReturn = document.getElementById('annualReturnValue');
     const lblYears = document.getElementById('timelineYearsValue');
     const lblGoal = document.getElementById('targetGoalValue');
+    const lblInflation = document.getElementById('inflationRateValue');
+    const lblBoost = document.getElementById('whatIfBoostValue');
 
     // Metric Displays
     const metricFV = document.getElementById('metricFutureValue');
+    const metricInflationVal = document.getElementById('metricInflationVal');
     const metricHorizonLabel = document.getElementById('metricHorizonLabel');
     const metricGoalTime = document.getElementById('metricGoalTime');
     const metricGoalTargetLabel = document.getElementById('metricGoalTargetLabel');
     const metricTotalContrib = document.getElementById('metricTotalContributions');
     const metricTotalInterest = document.getElementById('metricTotalInterest');
     const metricGrowthRatio = document.getElementById('metricGrowthRatio');
+    const whatIfTimeSaved = document.getElementById('whatIfTimeSaved');
 
-    // Visual Progress Bar
-    const barPrincipal = document.getElementById('barPrincipal');
-    const barInterest = document.getElementById('barInterest');
-
-    // Table Body
+    // Table Body & SVG Chart
     const tableBody = document.getElementById('trajectoryTableBody');
+    const growthSvg = document.getElementById('growthSvg');
 
     // Local Storage Vault Elements
     const inputScenarioName = document.getElementById('scenarioName');
     const btnSaveScenario = document.getElementById('btnSaveScenario');
+    const btnExportCsv = document.getElementById('btnExportCsv');
     const savedScenariosList = document.getElementById('savedScenariosList');
     const vaultCount = document.getElementById('vaultCount');
 
@@ -493,11 +522,8 @@
       const pv = parseFloat(document.getElementById('estCostBasis').value) || 1;
       const fv = parseFloat(document.getElementById('estCurrentVal').value) || 1;
       const yrs = parseFloat(document.getElementById('estYearsHeld').value) || 1;
-
       const cagr = (Math.pow(fv / pv, 1 / yrs) - 1) * 100;
-      const clamped = Math.max(1, Math.min(20, Number(cagr.toFixed(1))));
-
-      inputReturn.value = clamped;
+      inputReturn.value = Math.max(1, Math.min(20, Number(cagr.toFixed(1))));
       calculateTrajectory();
     }
 
@@ -505,14 +531,10 @@
       const eq = parseFloat(document.getElementById('allocEquities').value) || 0;
       const bo = parseFloat(document.getElementById('allocBonds').value) || 0;
       const ca = parseFloat(document.getElementById('allocCash').value) || 0;
-      
       const total = eq + bo + ca;
       if (total <= 0) return;
-
       const weighted = ((eq * 10.0) + (bo * 4.5) + (ca * 2.0)) / total;
-      const clamped = Math.max(1, Math.min(20, Number(weighted.toFixed(1))));
-
-      inputReturn.value = clamped;
+      inputReturn.value = Math.max(1, Math.min(20, Number(weighted.toFixed(1))));
       calculateTrajectory();
     }
 
@@ -521,43 +543,43 @@
       const PV = parseFloat(inputPrincipal.value) || 0;
       const PMT = parseFloat(inputContribution.value) || 0;
       const annualRate = (parseFloat(inputReturn.value) || 0) / 100;
-      const r = annualRate / 12; // Monthly rate
+      const r = annualRate / 12;
       const years = parseInt(inputYears.value) || 1;
       const targetGoal = parseFloat(inputGoal.value) || 0;
+      const inflationRate = (parseFloat(inputInflation.value) || 0) / 100;
+      const boostPMT = PMT + (parseFloat(inputBoost.value) || 0);
 
-      // Update Label text
+      // Update Labels
       lblPrincipal.textContent = formatCurrency(PV);
       lblContribution.textContent = formatCurrency(PMT);
       lblReturn.textContent = `${inputReturn.value}%`;
       lblYears.textContent = `${years} ${years === 1 ? 'Year' : 'Years'}`;
       lblGoal.textContent = formatCurrency(targetGoal);
+      lblInflation.textContent = `${inputInflation.value}%`;
+      lblBoost.textContent = `+$${inputBoost.value}/mo`;
 
       let currentBalance = PV;
       let totalContributions = PV;
       let yearBreakdown = [];
-
       let monthReachedGoal = null;
-
+      let boostMonthReached = null;
       const totalMonths = years * 12;
 
+      let boostBalance = PV;
       for (let m = 1; m <= totalMonths; m++) {
-        // Compound current balance for 1 month
         currentBalance = currentBalance * (1 + r) + PMT;
         totalContributions += PMT;
+        if (monthReachedGoal === null && currentBalance >= targetGoal) monthReachedGoal = m;
 
-        // Check when Target Goal is reached
-        if (monthReachedGoal === null && currentBalance >= targetGoal) {
-          monthReachedGoal = m;
-        }
+        // What-If Boost calculation
+        boostBalance = boostBalance * (1 + r) + boostPMT;
+        if (boostMonthReached === null && boostBalance >= targetGoal) boostMonthReached = m;
 
-        // Record yearly metrics
         if (m % 12 === 0) {
-          const yearNum = m / 12;
-          const totalInterestYear = currentBalance - totalContributions;
           yearBreakdown.push({
-            year: yearNum,
+            year: m / 12,
             invested: totalContributions,
-            interest: Math.max(0, totalInterestYear),
+            interest: Math.max(0, currentBalance - totalContributions),
             balance: currentBalance
           });
         }
@@ -566,39 +588,40 @@
       const netFutureValue = currentBalance;
       const netInterest = netFutureValue - totalContributions;
 
-      // Update UI Primary Metrics
+      // Inflation Adjusted (Purchasing Power in Today's Dollars)
+      const inflFactor = Math.pow(1 + inflationRate, years);
+      const realFutureValue = netFutureValue / inflFactor;
+      metricInflationVal.textContent = `${formatCurrency(realFutureValue)} in today's dollars`;
+
+      // What-If Time Saved calculation
+      if (monthReachedGoal !== null && boostMonthReached !== null && boostMonthReached < monthReachedGoal) {
+        const monthsSaved = monthReachedGoal - boostMonthReached;
+        const savedY = Math.floor(monthsSaved / 12);
+        const savedM = monthsSaved % 12;
+        whatIfTimeSaved.textContent = `💡 Boost hits goal ${savedY > 0 ? savedY + 'y ' : ''}${savedM}m sooner!`;
+      } else {
+        whatIfTimeSaved.textContent = `💡 Boost accelerates timeline to goal`;
+      }
+
+      // Update Primary Metrics
       metricFV.textContent = formatCurrency(netFutureValue);
       metricHorizonLabel.textContent = `${years} Years`;
       metricTotalContrib.textContent = formatCurrency(totalContributions);
       metricTotalInterest.textContent = formatCurrency(Math.max(0, netInterest));
 
-      // Calculate Growth Ratio Percentage
       const growthPercent = netFutureValue > 0 ? ((netInterest / netFutureValue) * 100).toFixed(1) : 0;
       metricGrowthRatio.textContent = `${growthPercent}% of total portfolio came from interest`;
 
-      // Update Visual Progress Bar Ratio
-      const principalPercent = netFutureValue > 0 ? (totalContributions / netFutureValue) * 100 : 100;
-      const interestPercent = Math.max(0, 100 - principalPercent);
-      barPrincipal.style.width = `${Math.min(100, Math.max(0, principalPercent))}%`;
-      barInterest.style.width = `${Math.min(100, Math.max(0, interestPercent))}%`;
-
-      // Goal Time Target Metric
       metricGoalTargetLabel.textContent = formatCurrency(targetGoal);
       if (monthReachedGoal !== null) {
         const goalY = Math.floor(monthReachedGoal / 12);
         const goalM = monthReachedGoal % 12;
-        if (goalY === 0) {
-          metricGoalTime.textContent = `${goalM} mos`;
-        } else if (goalM === 0) {
-          metricGoalTime.textContent = `${goalY} yrs`;
-        } else {
-          metricGoalTime.textContent = `${goalY}y ${goalM}m`;
-        }
+        metricGoalTime.textContent = goalY === 0 ? `${goalM} mos` : goalM === 0 ? `${goalY} yrs` : `${goalY}y ${goalM}m`;
       } else {
         metricGoalTime.textContent = `> ${years} yrs`;
       }
 
-      // Populate Breakdown Table
+      // Populate Table
       tableBody.innerHTML = '';
       yearBreakdown.forEach(item => {
         const row = document.createElement('tr');
@@ -611,42 +634,56 @@
         `;
         tableBody.appendChild(row);
       });
+
+      // Render SVG Growth Curve
+      renderSvgChart(yearBreakdown, netFutureValue);
     }
 
-    // Attach Event Listeners to Inputs for Real-Time Recalculation
-    [inputPrincipal, inputContribution, inputReturn, inputYears, inputGoal].forEach(input => {
+    // SVG Growth Chart Renderer
+    function renderSvgChart(data, maxVal) {
+      if (!data || data.length === 0) return;
+      const maxB = maxVal || 1;
+      const width = 500;
+      const height = 120;
+      
+      let points = data.map((d, i) => {
+        const x = (i / (data.length - 1 || 1)) * width;
+        const y = height - (d.balance / maxB) * height;
+        return `${x},${Math.max(5, y)}`;
+      });
+
+      let principalPoints = data.map((d, i) => {
+        const x = (i / (data.length - 1 || 1)) * width;
+        const y = height - (d.invested / maxB) * height;
+        return `${x},${Math.max(5, y)}`;
+      });
+
+      growthSvg.innerHTML = `
+        <polyline fill="none" stroke="#3b82f6" stroke-width="3" points="${points.join(' ')}" />
+        <polyline fill="none" stroke="#9ca3af" stroke-width="2" stroke-dasharray="4" points="${principalPoints.join(' ')}" />
+      `;
+    }
+
+    // Attach Event Listeners
+    [inputPrincipal, inputContribution, inputReturn, inputYears, inputGoal, inputInflation, inputBoost].forEach(input => {
       input.addEventListener('input', calculateTrajectory);
     });
 
-    // Preset Button Handlers
+    // Presets
     document.getElementById('btnPresetCoworker').addEventListener('click', () => {
-      inputPrincipal.value = 45000;
-      inputContribution.value = 800;
-      inputReturn.value = 8.0;
-      inputYears.value = 25;
-      inputGoal.value = 1000000;
+      inputPrincipal.value = 45000; inputContribution.value = 800; inputReturn.value = 8.0; inputYears.value = 25; inputGoal.value = 1000000;
       calculateTrajectory();
     });
-
     document.getElementById('btnPresetAggressive').addEventListener('click', () => {
-      inputPrincipal.value = 25000;
-      inputContribution.value = 1500;
-      inputReturn.value = 11.0;
-      inputYears.value = 20;
-      inputGoal.value = 2000000;
+      inputPrincipal.value = 25000; inputContribution.value = 1500; inputReturn.value = 11.0; inputYears.value = 20; inputGoal.value = 2000000;
       calculateTrajectory();
     });
-
     document.getElementById('btnPresetConservative').addEventListener('click', () => {
-      inputPrincipal.value = 10000;
-      inputContribution.value = 400;
-      inputReturn.value = 6.0;
-      inputYears.value = 30;
-      inputGoal.value = 500000;
+      inputPrincipal.value = 10000; inputContribution.value = 400; inputReturn.value = 6.0; inputYears.value = 30; inputGoal.value = 500000;
       calculateTrajectory();
     });
 
-    // LocalStorage Scenario Vault Functionality
+    // LocalStorage Scenario Vault & CSV Export
     const STORAGE_KEY = 'tcss490_artifact4_vault';
 
     function loadSavedScenarios() {
@@ -662,17 +699,15 @@
 
       scenarios.forEach((s, index) => {
         const item = document.createElement('div');
-        item.className = 'flex items-center justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/60 hover:border-blue-500/50 transition-all';
+        item.className = 'flex items-center justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/60';
         item.innerHTML = `
           <div>
             <div class="font-bold text-gray-900 dark:text-white">${s.name}</div>
-            <div class="text-[10px] font-mono text-gray-500">
-              Start: ${formatCurrency(s.principal)} | Mo: ${formatCurrency(s.monthly)} | Return: ${s.rate}%
-            </div>
+            <div class="text-[10px] font-mono text-gray-500">Start: ${formatCurrency(s.principal)} | Mo: ${formatCurrency(s.monthly)} | Return: ${s.rate}%</div>
           </div>
           <div class="flex items-center gap-1.5">
-            <button onclick="applyScenario(${index})" class="px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-semibold text-[10px] hover:bg-blue-200">Load</button>
-            <button onclick="deleteScenario(${index})" class="p-1 text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-trash"></i></button>
+            <button onclick="applyScenario(${index})" class="px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-semibold text-[10px]">Load</button>
+            <button onclick="deleteScenario(${index})" class="p-1 text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
           </div>
         `;
         savedScenariosList.appendChild(item);
@@ -694,9 +729,30 @@
       const scenarios = raw ? JSON.parse(raw) : [];
       scenarios.unshift(scenario);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(scenarios));
-
       inputScenarioName.value = '';
       loadSavedScenarios();
+    });
+
+    btnExportCsv.addEventListener('click', () => {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const scenarios = raw ? JSON.parse(raw) : [];
+      if (scenarios.length === 0) {
+        alert('No saved scenarios to export!');
+        return;
+      }
+
+      let csvContent = "data:text/csv;charset=utf-8,Scenario Name,Starting Principal,Monthly Contribution,Annual Return Rate,Time Horizon (Years),Target Goal\n";
+      scenarios.forEach(s => {
+        csvContent += `"${s.name}",${s.principal},${s.monthly},${s.rate},${s.years},${s.goal}\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "tcss490_investment_scenarios.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     });
 
     window.applyScenario = (index) => {
