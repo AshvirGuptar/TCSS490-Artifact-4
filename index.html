@@ -365,6 +365,47 @@
 
     </div>
 
+    <!-- Side-by-Side Scenario Comparison (owner: Vanessa, see PLAN.md) -->
+    <div id="comparePanel" class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 dark:border-gray-700/60 pb-3">
+        <div>
+          <h2 class="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-code-compare text-blue-500"></i>
+            <span>Side-by-Side Scenario Comparison</span>
+          </h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            Tick <span class="font-semibold">Compare</span> on two to four scenarios in the Saved Scenario Vault to line them up here.
+          </p>
+        </div>
+        <span id="compareCount" class="text-xs font-mono px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 self-start sm:self-center">0 / 4 selected</span>
+      </div>
+
+      <p id="compareEmpty" class="text-gray-400 text-center py-6 text-xs font-mono">Select at least two saved scenarios to compare.</p>
+
+      <div id="compareBody" class="hidden space-y-5">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead id="compareTableHead"></thead>
+            <tbody id="compareTableBody" class="divide-y divide-gray-100 dark:divide-gray-800/60"></tbody>
+          </table>
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between text-[10px] font-mono text-gray-500 dark:text-gray-400">
+            <span class="font-bold uppercase tracking-wider">Balance Over Time</span>
+            <span id="compareChartMax"></span>
+          </div>
+          <div class="w-full h-48 bg-gray-50 dark:bg-gray-900/50 rounded-xl overflow-hidden p-2">
+            <svg id="compareSvg" class="w-full h-full overflow-visible" viewBox="0 0 500 160" preserveAspectRatio="none"></svg>
+          </div>
+          <div class="flex justify-between text-[10px] font-mono text-gray-500 dark:text-gray-400">
+            <span>Yr 0</span>
+            <span id="compareChartEnd"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- BOTTOM PANEL: Return Rate Estimation Helper -->
     <div class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 dark:border-gray-700/60 pb-3">
@@ -692,20 +733,30 @@
       vaultCount.textContent = `${scenarios.length} Saved`;
 
       savedScenariosList.innerHTML = '';
+      renderComparison(scenarios);
       if (scenarios.length === 0) {
         savedScenariosList.innerHTML = '<p class="text-gray-400 text-center py-4 font-mono">No scenarios saved yet in local storage.</p>';
         return;
       }
 
+      const compareOrder = scenarios.filter(s => s.compare);
       scenarios.forEach((s, index) => {
+        const color = s.compare ? COMPARE_COLORS[compareOrder.indexOf(s)] : null;
         const item = document.createElement('div');
         item.className = 'flex items-center justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700/60';
         item.innerHTML = `
-          <div>
-            <div class="font-bold text-gray-900 dark:text-white">${s.name}</div>
+          <div class="min-w-0">
+            <div class="font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
+              ${color ? `<span class="w-2 h-2 rounded-full shrink-0" style="background:${color}"></span>` : ''}
+              <span class="truncate">${escapeHtml(s.name)}</span>
+            </div>
             <div class="text-[10px] font-mono text-gray-500">Start: ${formatCurrency(s.principal)} | Mo: ${formatCurrency(s.monthly)} | Return: ${s.rate}%</div>
           </div>
-          <div class="flex items-center gap-1.5">
+          <div class="flex items-center gap-1.5 shrink-0">
+            <label class="flex items-center gap-1 text-[10px] font-semibold text-gray-500 dark:text-gray-400 cursor-pointer">
+              <input type="checkbox" ${s.compare ? 'checked' : ''} onchange="toggleCompare(${index})" class="accent-blue-600">
+              <span>Compare</span>
+            </label>
             <button onclick="applyScenario(${index})" class="px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-semibold text-[10px]">Load</button>
             <button onclick="deleteScenario(${index})" class="p-1 text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
           </div>
@@ -722,7 +773,8 @@
         monthly: parseFloat(inputContribution.value) || 0,
         rate: parseFloat(inputReturn.value) || 0,
         years: parseInt(inputYears.value) || 1,
-        goal: parseFloat(inputGoal.value) || 0
+        goal: parseFloat(inputGoal.value) || 0,
+        inflation: parseFloat(inputInflation.value) || 0
       };
 
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -741,9 +793,9 @@
         return;
       }
 
-      let csvContent = "data:text/csv;charset=utf-8,Scenario Name,Starting Principal,Monthly Contribution,Annual Return Rate,Time Horizon (Years),Target Goal\n";
+      let csvContent = "data:text/csv;charset=utf-8,Scenario Name,Starting Principal,Monthly Contribution,Annual Return Rate,Time Horizon (Years),Target Goal,Inflation Rate\n";
       scenarios.forEach(s => {
-        csvContent += `"${s.name}",${s.principal},${s.monthly},${s.rate},${s.years},${s.goal}\n`;
+        csvContent += `"${String(s.name).replace(/"/g, '""')}",${s.principal},${s.monthly},${s.rate},${s.years},${s.goal},${s.inflation ?? ''}\n`;
       });
 
       const encodedUri = encodeURI(csvContent);
@@ -765,6 +817,7 @@
         inputReturn.value = s.rate;
         inputYears.value = s.years;
         inputGoal.value = s.goal;
+        if (s.inflation !== undefined) inputInflation.value = s.inflation;
         calculateTrajectory();
       }
     };
@@ -774,6 +827,146 @@
       let scenarios = raw ? JSON.parse(raw) : [];
       scenarios.splice(index, 1);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(scenarios));
+      loadSavedScenarios();
+    };
+
+    // Side-by-Side Scenario Comparison (owner: Vanessa, see PLAN.md)
+    const COMPARE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#f43f5e'];
+    const MAX_COMPARE = COMPARE_COLORS.length;
+    const DEFAULT_INFLATION = 2.5; // scenarios saved before inflation was stored
+
+    const compareCount = document.getElementById('compareCount');
+    const compareEmpty = document.getElementById('compareEmpty');
+    const compareBody = document.getElementById('compareBody');
+    const compareTableHead = document.getElementById('compareTableHead');
+    const compareTableBody = document.getElementById('compareTableBody');
+    const compareSvg = document.getElementById('compareSvg');
+    const compareChartMax = document.getElementById('compareChartMax');
+    const compareChartEnd = document.getElementById('compareChartEnd');
+
+    const escapeHtml = (str) => String(str).replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+
+    const formatGoalTime = (month, years) => {
+      if (month === null) return `> ${years} yrs`;
+      const y = Math.floor(month / 12);
+      const m = month % 12;
+      return y === 0 ? `${m} mos` : m === 0 ? `${y} yrs` : `${y}y ${m}m`;
+    };
+
+    // Same monthly compounding as calculateTrajectory(), run on a saved scenario instead of the form
+    function simulateScenario(s) {
+      const r = (s.rate / 100) / 12;
+      const inflation = (s.inflation ?? DEFAULT_INFLATION) / 100;
+      let balance = s.principal;
+      let invested = s.principal;
+      let monthReachedGoal = null;
+      const yearly = [{ year: 0, balance }];
+
+      for (let m = 1; m <= s.years * 12; m++) {
+        balance = balance * (1 + r) + s.monthly;
+        invested += s.monthly;
+        if (monthReachedGoal === null && balance >= s.goal) monthReachedGoal = m;
+        if (m % 12 === 0) yearly.push({ year: m / 12, balance });
+      }
+
+      return {
+        balance,
+        invested,
+        growth: balance - invested,
+        real: balance / Math.pow(1 + inflation, s.years),
+        inflation: inflation * 100,
+        monthReachedGoal,
+        yearly
+      };
+    }
+
+    function renderComparison(scenarios) {
+      const selected = scenarios.filter(s => s.compare);
+      compareCount.textContent = `${selected.length} / ${MAX_COMPARE} selected`;
+
+      if (selected.length < 2) {
+        compareEmpty.classList.remove('hidden');
+        compareBody.classList.add('hidden');
+        return;
+      }
+      compareEmpty.classList.add('hidden');
+      compareBody.classList.remove('hidden');
+
+      const results = selected.map(simulateScenario);
+      const bestBalance = Math.max(...results.map(r => r.balance));
+      const bestReal = Math.max(...results.map(r => r.real));
+      const reached = results.map(r => r.monthReachedGoal).filter(m => m !== null);
+      const fastestGoal = reached.length ? Math.min(...reached) : null;
+
+      // Scenarios are columns so they read side by side
+      compareTableHead.innerHTML = `
+        <tr class="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
+          <th class="pb-3 font-semibold"></th>
+          ${selected.map((s, i) => `
+            <th class="pb-3 font-semibold text-right">
+              <span class="inline-flex items-center gap-1.5 text-gray-900 dark:text-white">
+                <span class="w-2 h-2 rounded-full" style="background:${COMPARE_COLORS[i]}"></span>${escapeHtml(s.name)}
+              </span>
+            </th>`).join('')}
+        </tr>`;
+
+      const rows = [
+        ['Starting principal', (s) => formatCurrency(s.principal)],
+        ['Monthly contribution', (s) => formatCurrency(s.monthly)],
+        ['Annual return', (s) => `${s.rate}%`],
+        ['Time horizon', (s) => `${s.years} ${s.years === 1 ? 'Year' : 'Years'}`],
+        ['Inflation', (s, r) => `${r.inflation}%`],
+        ['Projected value', (s, r) => formatCurrency(r.balance), (r) => r.balance === bestBalance],
+        ["In today's dollars", (s, r) => formatCurrency(r.real), (r) => r.real === bestReal],
+        ['Total invested', (s, r) => formatCurrency(r.invested)],
+        ['Compound growth', (s, r) => `+${formatCurrency(Math.max(0, r.growth))}`],
+        ['Target goal', (s) => formatCurrency(s.goal)],
+        ['Time to goal', (s, r) => formatGoalTime(r.monthReachedGoal, s.years),
+          (r) => fastestGoal !== null && r.monthReachedGoal === fastestGoal]
+      ];
+
+      compareTableBody.innerHTML = rows.map(([label, cell, isBest]) => `
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
+          <td class="py-2.5 text-gray-700 dark:text-gray-300 font-semibold">${label}</td>
+          ${selected.map((s, i) => {
+            const best = isBest && isBest(results[i]);
+            return `<td class="py-2.5 text-right ${best ? 'font-bold text-emerald-600 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400'}">${cell(s, results[i])}${best ? ' ★' : ''}</td>`;
+          }).join('')}
+        </tr>`).join('');
+
+      // Overlay chart: every scenario on the same axes so different horizons line up by year
+      const width = 500;
+      const height = 160;
+      const maxYears = Math.max(...selected.map(s => s.years));
+      const maxBalance = Math.max(...results.flatMap(r => r.yearly.map(p => p.balance))) || 1;
+
+      compareSvg.innerHTML = results.map((r, i) => {
+        const points = r.yearly.map(p => {
+          const x = (p.year / maxYears) * width;
+          const y = height - (p.balance / maxBalance) * (height - 5);
+          return `${x},${y}`;
+        }).join(' ');
+        return `<polyline fill="none" stroke="${COMPARE_COLORS[i]}" stroke-width="3" vector-effect="non-scaling-stroke" points="${points}" />`;
+      }).join('');
+
+      compareChartMax.textContent = `Top: ${formatCurrency(maxBalance)}`;
+      compareChartEnd.textContent = `Yr ${maxYears}`;
+    }
+
+    window.toggleCompare = (index) => {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const scenarios = raw ? JSON.parse(raw) : [];
+      const s = scenarios[index];
+      if (!s) return;
+
+      if (!s.compare && scenarios.filter(x => x.compare).length >= MAX_COMPARE) {
+        alert(`You can compare up to ${MAX_COMPARE} scenarios at once. Untick one first.`);
+      } else {
+        s.compare = !s.compare;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(scenarios));
+      }
       loadSavedScenarios();
     };
 
