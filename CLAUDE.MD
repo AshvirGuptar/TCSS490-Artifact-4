@@ -1,6 +1,6 @@
 # AI LOG: TCSS 490 Artifact 04 - Portfolio Trajectory Simulator
 
-## 1. Project Overview & Objective
+## 1. Project Info for AI use along with Overview & Objective
 * **Course:** TCSS 490 (Special Topics in Computing / Software Systems Portfolio)
 * **Project Name:** Portfolio Trajectory Simulator (Investment Goal & Trajectory Calculator)
 * **Creators:** Vanessa and Ashvir Guptar
@@ -10,7 +10,7 @@
 
 ---
 
-## 2. Technical Stack & Architecture
+## 2. Selecting Technical Stack & Architecture
 * **Markup & Styling:** HTML5, Tailwind CSS (via CDN with custom dark mode configuration), FontAwesome icons, Inter & JetBrains Mono typography.
 * **Scripting:** Vanilla JavaScript (ES6+), running entirely client-side. No backend required.
 * **Persistence:** HTML5 `localStorage` for saving and loading user-defined portfolio scenarios.
@@ -32,14 +32,26 @@
 ---
 
 ## 4. Compliance & Constraints Checklist
-* **Zero Fake AI Outputs:** All calculations are driven by real mathematical compound growth formulas executed natively in JavaScript.
+* **Ensure Zero Fake Text Outputs:** All calculations are driven by real mathematical compound growth formulas executed natively in JavaScript.
 * **Single-File Portability:** Packed into a clean, modern structure designed for easy repository deployment and grading.
 ---
 
 ## Workflow Notes & AI Collaboration Reflection
 
 - **Primary Tool Used:** Claude (collaborative development and code architecture).
+- **Additional Tool Used:** Gemini (Brainstorming, idea validation and initial planning).
 - **Key Technical Challenges Resolved:**
   1. Ensuring compounding math updates instantly in real-time as range sliders move without stuttering or DOM lag.
   2. Structuring `localStorage` serialization so users can save, name, and compare multiple financial scenarios side-by-side.
   3. Strict adherence to instructor feedback: all math executes live in standard browser JS with zero hardcoded or simulated AI audit text.
+
+
+## Log Entries
+
+| Timestamp (UTC) | Tool / AI Model | Development Focus / Goal | Technical Intent & Summary |
+| :--- | :--- | :--- | :--- |
+| **2026-10-25 2:00PM** | Gemini | Project Structure | Evaluated candidate artifacts against TCSS 490 directives. Selected client-side investment simulator with dynamic outputs. Established single-file index.html architecture using Tailwind CSS and FontAwesome CDN, moved info to Claude for development. |
+| **2026-10-28 10:00PM** | Claude Code | Debug / Updates | Coded client-side mathematical compounding growth logic ($PV$, $PMT$, $r$) executing dynamically on input events. Built milestone goal timeline estimator and year-by-year trajectory table breakdown. |
+| **2026-10-28 9:00AM** | Claude Code | Added Features | Implemented bottom calculation helper panel providing Historical CAGR ($CAGR = (FV/PV)^{1/t} - 1$) and weighted Asset Allocation methods (Equities/Bonds/Cash) with auto-apply bindings to the main return slider. |
+| **2026-10-28 9:00PM** | Claude Code | Added Features | Implemented bottom calculation helper panel providing Historical CAGR ($CAGR = (FV/PV)^{1/t} - 1$) and weighted Asset Allocation methods (Equities/Bonds/Cash) with auto-apply bindings to the main return slider. |
+| **2026-10-29 9:00PM** | Claude Code | Criteria Evaluation | Compliance & Constraints Checklist based on artifact 4 instructions and past artifact feedback. |
