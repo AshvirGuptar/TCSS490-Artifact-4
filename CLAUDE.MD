@@ -3,7 +3,7 @@
 ## 1. Project Info for AI use along with Overview & Objective
 * **Course:** TCSS 490 (Special Topics in Computing / Software Systems Portfolio)
 * **Project Name:** Portfolio Trajectory Simulator (Investment Goal & Trajectory Calculator)
-* **Creators:** Vanessa and Ashvir Guptar
+* **Creators:** Vanessa and Ashvir 
 * **Live Deployment URL:** `https://ashvirguptar.github.io/TCSS490-Artifact-4/`
 * **Repository:** `https://github.com/AshvirGuptar/TCSS490-Artifact-4`
 * **Core Objective:** Provide a production-ready, 100% client-side financial compounding calculator and scenario modeling dashboard that satisfies all academic constraints while delivering professional utility.
