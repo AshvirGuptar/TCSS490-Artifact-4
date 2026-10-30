@@ -1,4 +1,4 @@
-# Project Handoff: TCSS 490 Artifact 04 - Portfolio Trajectory Simulator
+# AI LOG: TCSS 490 Artifact 04 - Portfolio Trajectory Simulator
 
 ## 1. Project Overview & Objective
 * **Course:** TCSS 490 (Special Topics in Computing / Software Systems Portfolio)
