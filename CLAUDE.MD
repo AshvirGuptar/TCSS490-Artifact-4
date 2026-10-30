@@ -34,6 +34,7 @@
 ## 4. Compliance & Constraints Checklist
 * **Ensure Zero Fake Text Outputs:** All calculations are driven by real mathematical compound growth formulas executed natively in JavaScript.
 * **Single-File Portability:** Packed into a clean, modern structure designed for easy repository deployment and grading.
+
 ---
 
 ## Workflow Notes & AI Collaboration Reflection
@@ -53,5 +54,5 @@
 | **2026-10-25 2:00PM** | Gemini | Project Structure | Evaluated candidate artifacts against TCSS 490 directives. Selected client-side investment simulator with dynamic outputs. Established single-file index.html architecture using Tailwind CSS and FontAwesome CDN, moved info to Claude for development. |
 | **2026-10-28 10:00PM** | Claude Code | Debug / Updates | Coded client-side mathematical compounding growth logic ($PV$, $PMT$, $r$) executing dynamically on input events. Built milestone goal timeline estimator and year-by-year trajectory table breakdown. |
 | **2026-10-28 9:00AM** | Claude Code | Added Features | Implemented bottom calculation helper panel providing Historical CAGR ($CAGR = (FV/PV)^{1/t} - 1$) and weighted Asset Allocation methods (Equities/Bonds/Cash) with auto-apply bindings to the main return slider. |
-| **2026-10-28 9:00PM** | Claude Code | Added Features | Implemented bottom calculation helper panel providing Historical CAGR ($CAGR = (FV/PV)^{1/t} - 1$) and weighted Asset Allocation methods (Equities/Bonds/Cash) with auto-apply bindings to the main return slider. |
+| **2026-10-28 9:00PM** | Claude Code | Added Features | Inflation-Adjusted Purchasing, Save Scenarios, Presets based on clients verbal requests for use case. |
 | **2026-10-29 9:00PM** | Claude Code | Criteria Evaluation | Compliance & Constraints Checklist based on artifact 4 instructions and past artifact feedback. |
