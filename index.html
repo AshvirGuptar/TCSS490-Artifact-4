@@ -140,7 +140,12 @@
             <!-- Starting Principal -->
             <div>
               <div class="flex justify-between items-center mb-1">
-                <label for="initialPrincipal" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Starting Principal ($)</label>
+                <label for="initialPrincipal" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                  Starting Principal ($)
+                  <button type="button" onclick="openGuide('principal')" class="text-gray-400 hover:text-blue-500 transition-colors" title="Virtual Guide">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+                  </button>
+                </label>
                 <span id="initialPrincipalValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">$45,000</span>
               </div>
               <input type="number" id="initialPrincipal" min="0" max="1000000" step="1000" value="45000"
@@ -150,7 +155,12 @@
             <!-- Monthly Contribution -->
             <div>
               <div class="flex justify-between items-center mb-1">
-                <label for="monthlyContribution" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Monthly Contribution ($)</label>
+                <label for="monthlyContribution" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                  Monthly Contribution ($)
+                  <button type="button" onclick="openGuide('contribution')" class="text-gray-400 hover:text-blue-500 transition-colors" title="Virtual Guide">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+                  </button>
+                </label>
                 <span id="monthlyContributionValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">$800</span>
               </div>
               <input type="number" id="monthlyContribution" min="0" max="20000" step="50" value="800"
@@ -160,7 +170,12 @@
             <!-- Annual Rate of Return -->
             <div>
               <div class="flex justify-between items-center mb-1">
-                <label for="annualReturn" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Expected Annual Return (%)</label>
+                <label for="annualReturn" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                  Expected Annual Return (%)
+                  <button type="button" onclick="openGuide('rate')" class="text-gray-400 hover:text-blue-500 transition-colors" title="Virtual Guide">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+                  </button>
+                </label>
                 <span id="annualReturnValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">8.0%</span>
               </div>
               <input type="range" id="annualReturn" min="1" max="20" step="0.5" value="8.0"
@@ -170,7 +185,12 @@
             <!-- Timeline Horizon (Years) -->
             <div>
               <div class="flex justify-between items-center mb-1">
-                <label for="timelineYears" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Time Horizon (Years)</label>
+                <label for="timelineYears" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                  Time Horizon (Years)
+                  <button type="button" onclick="openGuide('horizon')" class="text-gray-400 hover:text-blue-500 transition-colors" title="Virtual Guide">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+                  </button>
+                </label>
                 <span id="timelineYearsValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">25 Years</span>
               </div>
               <input type="range" id="timelineYears" min="1" max="50" step="1" value="25"
@@ -180,18 +200,27 @@
             <!-- Target Goal Amount -->
             <div>
               <div class="flex justify-between items-center mb-1">
-                <label for="targetGoal" class="text-xs font-semibold text-gray-700 dark:text-gray-300">Target Portfolio Goal ($)</label>
+                <label for="targetGoal" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                  Target Portfolio Goal ($)
+                  <button type="button" onclick="openGuide('goal')" class="text-gray-400 hover:text-blue-500 transition-colors" title="Virtual Guide">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+                  </button>
+                </label>
                 <span id="targetGoalValue" class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">$1,000,000</span>
               </div>
               <input type="number" id="targetGoal" min="10000" max="10000000" step="25000" value="1000000"
                      class="w-full px-3.5 py-2 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
 
-            <!-- ENHANCEMENT 1: Inflation Rate Toggle -->
+            <!-- Inflation Rate Toggle -->
             <div class="pt-2 border-t border-gray-200 dark:border-gray-700/60">
               <div class="flex justify-between items-center mb-1">
-                <label for="inflationRate" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                  <i class="fa-solid fa-scale-unbalanced text-amber-500"></i> Estimated Annual Inflation (%)
+                <label for="inflationRate" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                  <i class="fa-solid fa-scale-unbalanced text-amber-500"></i> 
+                  <span>Estimated Annual Inflation (%)</span>
+                  <button type="button" onclick="openGuide('inflation')" class="text-gray-400 hover:text-amber-500 transition-colors" title="Virtual Guide">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+                  </button>
                 </label>
                 <span id="inflationRateValue" class="text-xs font-mono font-bold text-amber-500">2.5%</span>
               </div>
@@ -199,11 +228,15 @@
                      class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-amber-500" />
             </div>
 
-            <!-- ENHANCEMENT 2: What-If Monthly Boost Accelerator -->
+            <!-- What-If Monthly Boost Accelerator -->
             <div>
               <div class="flex justify-between items-center mb-1">
-                <label for="whatIfBoost" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1">
-                  <i class="fa-solid fa-bolt text-emerald-500"></i> "What-If" Monthly Boost ($)
+                <label for="whatIfBoost" class="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                  <i class="fa-solid fa-bolt text-emerald-500"></i> 
+                  <span>"What-If" Monthly Boost ($)</span>
+                  <button type="button" onclick="openGuide('boost')" class="text-gray-400 hover:text-emerald-500 transition-colors" title="Virtual Guide">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+                  </button>
                 </label>
                 <span id="whatIfBoostValue" class="text-xs font-mono font-bold text-emerald-500">+$200/mo</span>
               </div>
@@ -260,9 +293,14 @@
 
           <!-- Net Future Value -->
           <div class="p-5 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/80 shadow-sm relative overflow-hidden">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block mb-1">
-              Projected Portfolio Value
-            </span>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block">
+                Projected Portfolio Value
+              </span>
+              <button type="button" onclick="openGuide('purchasingPower')" class="text-gray-400 hover:text-amber-500 transition-colors" title="Virtual Guide">
+                <i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+              </button>
+            </div>
             <div id="metricFutureValue" class="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 font-mono">
               $0.00
             </div>
@@ -316,7 +354,7 @@
 
         </div>
 
-        <!-- ENHANCEMENT 3: Visual SVG Growth Chart -->
+        <!-- Visual SVG Growth Chart -->
         <div class="bg-white dark:bg-gray-800/80 p-5 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
@@ -365,7 +403,7 @@
 
     </div>
 
-    <!-- Side-by-Side Scenario Comparison (owner: Vanessa, see PLAN.md) -->
+    <!-- Side-by-Side Scenario Comparison -->
     <div id="comparePanel" class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 dark:border-gray-700/60 pb-3">
         <div>
@@ -413,6 +451,9 @@
           <h2 class="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
             <i class="fa-solid fa-calculator text-blue-500"></i>
             <span>Expected Return Rate Calculator (CAGR & Allocation)</span>
+            <button type="button" onclick="openGuide('cagr')" class="text-gray-400 hover:text-blue-500 transition-colors" title="Virtual Guide">
+              <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+            </button>
           </h2>
           <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
             Derive an accurate return rate from past portfolio performance or weighted asset allocation benchmarks and apply it directly to the engine.
@@ -473,6 +514,34 @@
 
   </main>
 
+  <!-- Interactive Financial Terminology Guide Modal -->
+  <div id="guideModal" class="fixed inset-0 z-50 bg-gray-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-opacity">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full p-6 shadow-2xl relative space-y-4 animate-in fade-in zoom-in duration-150">
+      <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-700/60 pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+          </div>
+          <h3 id="guideTitle" class="font-bold text-gray-900 dark:text-white text-base">Virtual Guide</h3>
+        </div>
+        <button onclick="closeGuide()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <p id="guideBody" class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+        Guidance description text.
+      </p>
+      <div id="guideFormula" class="hidden p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 font-mono text-xs text-blue-600 dark:text-blue-400 font-semibold">
+        --
+      </div>
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeGuide()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition-colors">
+          Got it
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="mt-16 border-t border-gray-200 dark:border-gray-800 py-8 text-center text-xs text-gray-500 dark:text-gray-400">
     <div class="max-w-7xl mx-auto px-4">
@@ -487,6 +556,86 @@
     const themeToggleBtn = document.getElementById('themeToggle');
     themeToggleBtn.addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
+    });
+
+    // Virtual Guide Glossary Content Dictionary
+    const GUIDE_DATA = {
+      principal: {
+        title: 'Starting Principal',
+        body: 'The initial lump sum of money you start with in your brokerage or retirement account before adding monthly contributions.',
+        formula: 'Initial Account Balance ($)'
+      },
+      contribution: {
+        title: 'Monthly Contribution',
+        body: 'The recurring amount of out-of-pocket money you deposit into your investment account at the end of each month.',
+        formula: 'PMT = Monthly Deposit ($)'
+      },
+      rate: {
+        title: 'Expected Annual Return (%)',
+        body: 'The estimated average percentage rate your portfolio grows per year. The engine divides this annual rate by 12 to compound growth monthly.',
+        formula: 'r = Annual Rate / 12'
+      },
+      horizon: {
+        title: 'Time Horizon (Years)',
+        body: 'The total duration (in years) you plan to let your money grow in the portfolio.',
+        formula: 'Total Compounding Periods = Years × 12'
+      },
+      goal: {
+        title: 'Target Portfolio Goal',
+        body: 'Your target total dollar milestone (e.g., $1,000,000). The engine calculates the exact month your balance reaches this threshold.',
+        formula: 'Target Threshold ($)'
+      },
+      inflation: {
+        title: 'Estimated Annual Inflation',
+        body: 'The average annual rate at which living costs increase. This reduces money purchasing power over time.',
+        formula: 'Inflation Factor = (1 + Inflation Rate)^Years'
+      },
+      boost: {
+        title: 'What-If Monthly Boost',
+        body: 'An extra monthly savings experiment. It shows how even small additional monthly deposits drastically shorten the time needed to hit your target goal.',
+        formula: 'Accelerated PMT = Base Monthly Deposit + Boost'
+      },
+      purchasingPower: {
+        title: 'Inflation Discounting (Today\'s Dollars)',
+        body: 'Shows what your future portfolio value will actually buy in terms of real purchasing power today, adjusting for inflation.',
+        formula: 'Real Value = Future Value / (1 + Inflation Rate)^Years'
+      },
+      cagr: {
+        title: 'Compound Annual Growth Rate (CAGR)',
+        body: 'The annualized rate of return earned on an investment over a multi-year holding period, smoothing out year-to-year market volatility.',
+        formula: 'CAGR = (End Value / Start Value)^(1 / Years) - 1'
+      }
+    };
+
+    const guideModal = document.getElementById('guideModal');
+    const guideTitle = document.getElementById('guideTitle');
+    const guideBody = document.getElementById('guideBody');
+    const guideFormula = document.getElementById('guideFormula');
+
+    function openGuide(key) {
+      const data = GUIDE_DATA[key];
+      if (!data) return;
+      guideTitle.textContent = data.title;
+      guideBody.textContent = data.body;
+      if (data.formula) {
+        guideFormula.textContent = `Formula: ${data.formula}`;
+        guideFormula.classList.remove('hidden');
+      } else {
+        guideFormula.classList.add('hidden');
+      }
+      guideModal.classList.remove('hidden');
+    }
+
+    function closeGuide() {
+      guideModal.classList.add('hidden');
+    }
+
+    // Close Modal on Overlay Background Click or ESC key
+    guideModal.addEventListener('click', (e) => {
+      if (e.target === guideModal) closeGuide();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !guideModal.classList.contains('hidden')) closeGuide();
     });
 
     // Form DOM Elements
@@ -830,10 +979,10 @@
       loadSavedScenarios();
     };
 
-    // Side-by-Side Scenario Comparison (owner: Vanessa, see PLAN.md)
+    // Side-by-Side Scenario Comparison
     const COMPARE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#f43f5e'];
     const MAX_COMPARE = COMPARE_COLORS.length;
-    const DEFAULT_INFLATION = 2.5; // scenarios saved before inflation was stored
+    const DEFAULT_INFLATION = 2.5;
 
     const compareCount = document.getElementById('compareCount');
     const compareEmpty = document.getElementById('compareEmpty');
@@ -855,7 +1004,6 @@
       return y === 0 ? `${m} mos` : m === 0 ? `${y} yrs` : `${y}y ${m}m`;
     };
 
-    // Same monthly compounding as calculateTrajectory(), run on a saved scenario instead of the form
     function simulateScenario(s) {
       const r = (s.rate / 100) / 12;
       const inflation = (s.inflation ?? DEFAULT_INFLATION) / 100;
@@ -900,7 +1048,6 @@
       const reached = results.map(r => r.monthReachedGoal).filter(m => m !== null);
       const fastestGoal = reached.length ? Math.min(...reached) : null;
 
-      // Scenarios are columns so they read side by side
       compareTableHead.innerHTML = `
         <tr class="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
           <th class="pb-3 font-semibold"></th>
@@ -936,7 +1083,6 @@
           }).join('')}
         </tr>`).join('');
 
-      // Overlay chart: every scenario on the same axes so different horizons line up by year
       const width = 500;
       const height = 160;
       const maxYears = Math.max(...selected.map(s => s.years));
