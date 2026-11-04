@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Artifact 4 - Portfolio Trajectory Simulator | Ashvir Guptar</title>
+  <title>Artifact 4 - Portfolio Trajectory Simulator | Vanessa and Ashvir</title>
+
+  <!-- Apply the saved light/dark choice before the page paints -->
+  <script>
+    try {
+      if (localStorage.getItem('tcss490_artifact4_theme') === 'light') document.documentElement.classList.remove('dark');
+    } catch (e) { /* storage blocked: keep default dark theme */ }
+  </script>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -68,7 +75,7 @@
 
         <!-- Header Actions -->
         <div class="flex items-center justify-between sm:justify-end gap-2.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-800">
-          <a href="https://github.com/AshvirGuptar/TCSS490-portfolio/blob/main/log.md" 
+          <a href="https://github.com/AshvirGuptar/TCSS490-Artifact-4/blob/main/CLAUDE.MD" 
              target="_blank" 
              rel="noopener noreferrer" 
              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 transition-all">
@@ -389,7 +396,7 @@
                 <tr class="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
                   <th class="pb-3 font-semibold">Year</th>
                   <th class="pb-3 font-semibold">Total Invested</th>
-                  <th class="pb-3 font-semibold">Interest Earned</th>
+                  <th class="pb-3 font-semibold">Total Interest to Date</th>
                   <th class="pb-3 font-semibold text-right">End Balance</th>
                 </tr>
               </thead>
@@ -559,7 +566,10 @@
     // Theme Toggle Functionality
     const themeToggleBtn = document.getElementById('themeToggle');
     themeToggleBtn.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.toggle('dark');
+      try {
+        localStorage.setItem('tcss490_artifact4_theme', isDark ? 'dark' : 'light');
+      } catch (e) { /* storage blocked: theme just won't be remembered */ }
     });
 
     // ===== Virtual Guide glossary (owner: Ashvir) =====
@@ -905,17 +915,21 @@
       input.addEventListener('input', calculateTrajectory);
     });
 
-    // Presets
+    // Presets (each one also resets inflation and the What-If boost to their defaults)
+    const resetSecondaryInputs = () => { inputInflation.value = 2.5; inputBoost.value = 200; };
     document.getElementById('btnPresetCoworker').addEventListener('click', () => {
       inputPrincipal.value = 45000; inputContribution.value = 800; inputReturn.value = 8.0; inputYears.value = 25; inputGoal.value = 1000000;
+      resetSecondaryInputs();
       calculateTrajectory();
     });
     document.getElementById('btnPresetAggressive').addEventListener('click', () => {
       inputPrincipal.value = 25000; inputContribution.value = 1500; inputReturn.value = 11.0; inputYears.value = 20; inputGoal.value = 2000000;
+      resetSecondaryInputs();
       calculateTrajectory();
     });
     document.getElementById('btnPresetConservative').addEventListener('click', () => {
       inputPrincipal.value = 10000; inputContribution.value = 400; inputReturn.value = 6.0; inputYears.value = 30; inputGoal.value = 500000;
+      resetSecondaryInputs();
       calculateTrajectory();
     });
 
@@ -1023,6 +1037,8 @@
     window.deleteScenario = (index) => {
       const raw = localStorage.getItem(STORAGE_KEY);
       let scenarios = raw ? JSON.parse(raw) : [];
+      if (!scenarios[index]) return;
+      if (!confirm(`Delete the saved scenario "${scenarios[index].name}"? This cannot be undone.`)) return;
       scenarios.splice(index, 1);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(scenarios));
       loadSavedScenarios();
