@@ -4,7 +4,7 @@
 Two people work on this repo, each with their own Claude session, and our agents do not talk to each other.
 **Read `PLAN.md` before making any change.** In short:
 * **Ownership:** Ashvir owns the core engine, inputs/presets, metric cards, growth chart, table, return-rate helper and deployment. Vanessa owns the Side-by-Side Scenario Comparison panel and the vault changes it needs. Owned sections of `index.html` are marked with comments.
-* **Branches & PRs:** never commit to `main`. Work on `<name>/<feature>`, open a pull request, and the *other* teammate reviews and merges it.
+* **Branches & PRs:** avoid commits to `main`. Work on `<name>/<feature>`, open a pull request, and the *other* teammate reviews and merges it.
 * **Stay in your lane:** only edit the other person's section if the task requires it, and call that out in the PR description.
 * **Log:** every PR adds its own rows to the Log Entries table at the bottom of this file.
 
