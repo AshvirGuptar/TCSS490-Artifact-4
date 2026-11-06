@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Artifact 4 - Portfolio Trajectory Simulator | Ashvir Guptar</title>
+  <title>Artifact 4 - Portfolio Trajectory Simulator | Vanessa and Ashvir</title>
+
+  <!-- Apply the saved light/dark choice before the page paints -->
+  <script>
+    try {
+      if (localStorage.getItem('tcss490_artifact4_theme') === 'light') document.documentElement.classList.remove('dark');
+    } catch (e) { /* storage blocked: keep default dark theme */ }
+  </script>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -68,7 +75,7 @@
 
         <!-- Header Actions -->
         <div class="flex items-center justify-between sm:justify-end gap-2.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-800">
-          <a href="https://github.com/AshvirGuptar/TCSS490-portfolio/blob/main/log.md" 
+          <a href="https://github.com/AshvirGuptar/TCSS490-Artifact-4/blob/main/CLAUDE.MD" 
              target="_blank" 
              rel="noopener noreferrer" 
              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 transition-all">
@@ -124,6 +131,7 @@
       </div>
     </div>
 
+    <!-- Owner: Ashvir - inputs, presets, metric cards, growth chart, year-by-year table -->
     <!-- Grid Layout: Controls (Left) & Real-Time Projections (Right) -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -178,7 +186,7 @@
                 </label>
                 <span id="annualReturnValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">8.0%</span>
               </div>
-              <input type="range" id="annualReturn" min="1" max="20" step="0.5" value="8.0"
+              <input type="range" id="annualReturn" min="1" max="20" step="0.1" value="8.0"
                      class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-600" />
             </div>
 
@@ -250,7 +258,7 @@
           </form>
         </div>
 
-        <!-- Local Storage Vault Management Card -->
+        <!-- Local Storage Vault Management Card (owner: Ashvir; Compare checkbox: Vanessa) -->
         <div class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm">
           <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center justify-between">
             <span class="flex items-center gap-2">
@@ -388,7 +396,7 @@
                 <tr class="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
                   <th class="pb-3 font-semibold">Year</th>
                   <th class="pb-3 font-semibold">Total Invested</th>
-                  <th class="pb-3 font-semibold">Interest Earned</th>
+                  <th class="pb-3 font-semibold">Total Interest to Date</th>
                   <th class="pb-3 font-semibold text-right">End Balance</th>
                 </tr>
               </thead>
@@ -403,7 +411,7 @@
 
     </div>
 
-    <!-- Side-by-Side Scenario Comparison -->
+    <!-- Side-by-Side Scenario Comparison (owner: Vanessa) -->
     <div id="comparePanel" class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 dark:border-gray-700/60 pb-3">
         <div>
@@ -444,7 +452,7 @@
       </div>
     </div>
 
-    <!-- BOTTOM PANEL: Return Rate Estimation Helper -->
+    <!-- BOTTOM PANEL: Return Rate Estimation Helper (owner: Ashvir) -->
     <div class="bg-white dark:bg-gray-800/80 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 dark:border-gray-700/60 pb-3">
         <div>
@@ -510,11 +518,14 @@
           </button>
         </div>
       </div>
+
+      <p id="rateHelperStatus" class="hidden text-xs font-mono font-semibold"></p>
     </div>
+    <!-- END Return Rate Helper (owner: Ashvir) -->
 
   </main>
 
-  <!-- Interactive Financial Terminology Guide Modal -->
+  <!-- Interactive Financial Terminology Guide Modal (owner: Ashvir) -->
   <div id="guideModal" class="fixed inset-0 z-50 bg-gray-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-opacity">
     <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full p-6 shadow-2xl relative space-y-4 animate-in fade-in zoom-in duration-150">
       <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-700/60 pb-3">
@@ -555,9 +566,13 @@
     // Theme Toggle Functionality
     const themeToggleBtn = document.getElementById('themeToggle');
     themeToggleBtn.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.toggle('dark');
+      try {
+        localStorage.setItem('tcss490_artifact4_theme', isDark ? 'dark' : 'light');
+      } catch (e) { /* storage blocked: theme just won't be remembered */ }
     });
 
+    // ===== Virtual Guide glossary (owner: Ashvir) =====
     // Virtual Guide Glossary Content Dictionary
     const GUIDE_DATA = {
       principal: {
@@ -707,37 +722,72 @@
       }
     }
 
+    // ===== Return rate helper (owner: Ashvir) =====
     // Rate Calculation Handlers
-    function calculateCagrRate() {
-      const pv = parseFloat(document.getElementById('estCostBasis').value) || 1;
-      const fv = parseFloat(document.getElementById('estCurrentVal').value) || 1;
-      const yrs = parseFloat(document.getElementById('estYearsHeld').value) || 1;
-      const cagr = (Math.pow(fv / pv, 1 / yrs) - 1) * 100;
-      inputReturn.value = Math.max(1, Math.min(20, Number(cagr.toFixed(1))));
+    const rateHelperStatus = document.getElementById('rateHelperStatus');
+    const RATE_MIN = 1;
+    const RATE_MAX = 20;
+
+    function showRateStatus(message, isError) {
+      rateHelperStatus.textContent = message;
+      rateHelperStatus.className = `text-xs font-mono font-semibold ${isError ? 'text-red-500' : 'text-emerald-600 dark:text-emerald-400'}`;
+    }
+
+    // Applies a calculated rate to the main slider and tells the user if it had to be limited
+    function applyRate(rate, sourceLabel) {
+      const rounded = Number(rate.toFixed(1));
+      const applied = Math.max(RATE_MIN, Math.min(RATE_MAX, rounded));
+      inputReturn.value = applied;
       calculateTrajectory();
+      if (applied !== rounded) {
+        showRateStatus(`${sourceLabel} is ${rounded}%, outside the ${RATE_MIN}–${RATE_MAX}% range, so ${applied}% was applied.`, true);
+      } else {
+        showRateStatus(`${sourceLabel} is ${rounded}%. Applied to Expected Annual Return.`, false);
+      }
+    }
+
+    function calculateCagrRate() {
+      const pv = parseFloat(document.getElementById('estCostBasis').value);
+      const fv = parseFloat(document.getElementById('estCurrentVal').value);
+      const yrs = parseFloat(document.getElementById('estYearsHeld').value);
+      if (!(pv > 0) || !(fv > 0) || !(yrs > 0)) {
+        showRateStatus('Enter a starting principal, current value and holding period that are all greater than 0.', true);
+        return;
+      }
+      const cagr = (Math.pow(fv / pv, 1 / yrs) - 1) * 100;
+      applyRate(cagr, 'Historical CAGR');
     }
 
     function calculateAllocRate() {
       const eq = parseFloat(document.getElementById('allocEquities').value) || 0;
       const bo = parseFloat(document.getElementById('allocBonds').value) || 0;
       const ca = parseFloat(document.getElementById('allocCash').value) || 0;
+      if (eq < 0 || bo < 0 || ca < 0) {
+        showRateStatus('Allocation percentages cannot be negative.', true);
+        return;
+      }
       const total = eq + bo + ca;
-      if (total <= 0) return;
+      if (total <= 0) {
+        showRateStatus('Enter at least one allocation percentage above 0.', true);
+        return;
+      }
       const weighted = ((eq * 10.0) + (bo * 4.5) + (ca * 2.0)) / total;
-      inputReturn.value = Math.max(1, Math.min(20, Number(weighted.toFixed(1))));
-      calculateTrajectory();
+      applyRate(weighted, 'Weighted allocation return');
     }
 
+    // ===== Core engine, metrics, chart and table (owner: Ashvir) =====
     // Core Compound Interest Mathematical Calculation Engine
     function calculateTrajectory() {
-      const PV = parseFloat(inputPrincipal.value) || 0;
-      const PMT = parseFloat(inputContribution.value) || 0;
+      // Negative dollar amounts are treated as 0
+      const PV = Math.max(0, parseFloat(inputPrincipal.value) || 0);
+      const PMT = Math.max(0, parseFloat(inputContribution.value) || 0);
       const annualRate = (parseFloat(inputReturn.value) || 0) / 100;
       const r = annualRate / 12;
       const years = parseInt(inputYears.value) || 1;
-      const targetGoal = parseFloat(inputGoal.value) || 0;
+      const targetGoal = Math.max(0, parseFloat(inputGoal.value) || 0);
       const inflationRate = (parseFloat(inputInflation.value) || 0) / 100;
-      const boostPMT = PMT + (parseFloat(inputBoost.value) || 0);
+      const boostAmount = Math.max(0, parseFloat(inputBoost.value) || 0);
+      const boostPMT = PMT + boostAmount;
 
       // Update Labels
       lblPrincipal.textContent = formatCurrency(PV);
@@ -746,7 +796,7 @@
       lblYears.textContent = `${years} ${years === 1 ? 'Year' : 'Years'}`;
       lblGoal.textContent = formatCurrency(targetGoal);
       lblInflation.textContent = `${inputInflation.value}%`;
-      lblBoost.textContent = `+$${inputBoost.value}/mo`;
+      lblBoost.textContent = `+${formatCurrency(boostAmount)}/mo`;
 
       let currentBalance = PV;
       let totalContributions = PV;
@@ -784,13 +834,19 @@
       metricInflationVal.textContent = `${formatCurrency(realFutureValue)} in today's dollars`;
 
       // What-If Time Saved calculation
-      if (monthReachedGoal !== null && boostMonthReached !== null && boostMonthReached < monthReachedGoal) {
+      if (boostAmount === 0) {
+        whatIfTimeSaved.textContent = `Enter a boost amount to see how much sooner you reach your goal`;
+      } else if (monthReachedGoal !== null && boostMonthReached !== null && boostMonthReached < monthReachedGoal) {
         const monthsSaved = monthReachedGoal - boostMonthReached;
         const savedY = Math.floor(monthsSaved / 12);
         const savedM = monthsSaved % 12;
         whatIfTimeSaved.textContent = `💡 Boost hits goal ${savedY > 0 ? savedY + 'y ' : ''}${savedM}m sooner!`;
+      } else if (monthReachedGoal === null && boostMonthReached !== null) {
+        whatIfTimeSaved.textContent = `💡 Boost reaches the goal in ${formatGoalTime(boostMonthReached, years)}, within your ${years}-year horizon (the base plan does not)`;
+      } else if (monthReachedGoal === null) {
+        whatIfTimeSaved.textContent = `Goal not reached within ${years} years, even with the boost`;
       } else {
-        whatIfTimeSaved.textContent = `💡 Boost accelerates timeline to goal`;
+        whatIfTimeSaved.textContent = `Boost does not change the month you reach your goal`;
       }
 
       // Update Primary Metrics
@@ -859,20 +915,25 @@
       input.addEventListener('input', calculateTrajectory);
     });
 
-    // Presets
+    // Presets (each one also resets inflation and the What-If boost to their defaults)
+    const resetSecondaryInputs = () => { inputInflation.value = 2.5; inputBoost.value = 200; };
     document.getElementById('btnPresetCoworker').addEventListener('click', () => {
       inputPrincipal.value = 45000; inputContribution.value = 800; inputReturn.value = 8.0; inputYears.value = 25; inputGoal.value = 1000000;
+      resetSecondaryInputs();
       calculateTrajectory();
     });
     document.getElementById('btnPresetAggressive').addEventListener('click', () => {
       inputPrincipal.value = 25000; inputContribution.value = 1500; inputReturn.value = 11.0; inputYears.value = 20; inputGoal.value = 2000000;
+      resetSecondaryInputs();
       calculateTrajectory();
     });
     document.getElementById('btnPresetConservative').addEventListener('click', () => {
       inputPrincipal.value = 10000; inputContribution.value = 400; inputReturn.value = 6.0; inputYears.value = 30; inputGoal.value = 500000;
+      resetSecondaryInputs();
       calculateTrajectory();
     });
 
+    // ===== Scenario Vault & CSV export (owner: Ashvir; compare + inflation saving: Vanessa) =====
     // LocalStorage Scenario Vault & CSV Export
     const STORAGE_KEY = 'tcss490_artifact4_vault';
 
@@ -942,18 +1003,20 @@
         return;
       }
 
-      let csvContent = "data:text/csv;charset=utf-8,Scenario Name,Starting Principal,Monthly Contribution,Annual Return Rate,Time Horizon (Years),Target Goal,Inflation Rate\n";
+      let csvContent = "Scenario Name,Starting Principal,Monthly Contribution,Annual Return Rate,Time Horizon (Years),Target Goal,Inflation Rate\n";
       scenarios.forEach(s => {
         csvContent += `"${String(s.name).replace(/"/g, '""')}",${s.principal},${s.monthly},${s.rate},${s.years},${s.goal},${s.inflation ?? ''}\n`;
       });
 
-      const encodedUri = encodeURI(csvContent);
+      // A Blob keeps characters like '#' in scenario names from cutting the file short
+      const url = URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8' }));
       const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
+      link.setAttribute("href", url);
       link.setAttribute("download", "tcss490_investment_scenarios.csv");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     });
 
     window.applyScenario = (index) => {
@@ -974,12 +1037,14 @@
     window.deleteScenario = (index) => {
       const raw = localStorage.getItem(STORAGE_KEY);
       let scenarios = raw ? JSON.parse(raw) : [];
+      if (!scenarios[index]) return;
+      if (!confirm(`Delete the saved scenario "${scenarios[index].name}"? This cannot be undone.`)) return;
       scenarios.splice(index, 1);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(scenarios));
       loadSavedScenarios();
     };
 
-    // Side-by-Side Scenario Comparison
+    // ===== Side-by-Side Scenario Comparison (owner: Vanessa) =====
     const COMPARE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#f43f5e'];
     const MAX_COMPARE = COMPARE_COLORS.length;
     const DEFAULT_INFLATION = 2.5;
