@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulator Tests | Vanessa and Ashvir</title>
+  <style>
+    :root { --bg: #f9fafb; --card: #ffffff; --text: #111827; --muted: #6b7280; --border: #e5e7eb; --pass: #059669; --fail: #dc2626; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #111827; --card: #1f2937; --text: #f3f4f6; --muted: #9ca3af; --border: #374151; --pass: #34d399; --fail: #f87171; }
+    }
+    body { margin: 0; padding: 24px 16px; background: var(--bg); color: var(--text); font: 14px/1.5 system-ui, sans-serif; }
+    main { max-width: 860px; margin: 0 auto; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    h2 { font-size: 15px; margin: 24px 0 8px; }
+    p { color: var(--muted); margin: 0 0 12px; }
+    #summary { font-weight: 700; font-size: 16px; padding: 12px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--border); }
+    #summary.pass { color: var(--pass); }
+    #summary.fail { color: var(--fail); }
+    ul { list-style: none; margin: 0; padding: 0; background: var(--card); border: 1px solid var(--border); border-radius: 10px; }
+    li { padding: 8px 12px; border-top: 1px solid var(--border); }
+    li:first-child { border-top: 0; }
+    .ok::before { content: "✓ "; color: var(--pass); font-weight: 700; }
+    .bad::before { content: "✗ "; color: var(--fail); font-weight: 700; }
+    .bad { color: var(--fail); }
+    .detail { display: block; color: var(--muted); font: 12px/1.4 ui-monospace, monospace; white-space: pre-wrap; }
+    iframe { position: absolute; width: 1280px; height: 900px; left: -10000px; top: 0; border: 0; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Portfolio Trajectory Simulator: Tests</h1>
+  <p>Runs against the real <code>../index.html</code> in a hidden frame. The saved-scenario format these tests check is written down in <code>PLAN.md</code>. Your saved scenarios are put back exactly as they were after the save test.</p>
+  <div id="summary">Running…</div>
+  <div id="groups"></div>
+</main>
+<iframe id="app" title="Simulator under test"></iframe>
+
+<script>
+  const groups = {};
+  let passed = 0;
+  let failed = 0;
+
+  function check(group, name, ok, detail = '') {
+    if (!groups[group]) {
+      const h = document.createElement('h2');
+      h.textContent = group;
+      groups[group] = document.createElement('ul');
+      document.getElementById('groups').append(h, groups[group]);
+    }
+    const li = document.createElement('li');
+    li.className = ok ? 'ok' : 'bad';
+    li.textContent = name;
+    if (!ok && detail) {
+      const d = document.createElement('span');
+      d.className = 'detail';
+      d.textContent = detail;
+      li.append(d);
+    }
+    groups[group].append(li);
+    ok ? passed++ : failed++;
+  }
+
+  // Floating-point comparison, relative for large dollar amounts
+  const close = (a, b, tol = 1e-9) => Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
+  const money = (v) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
+
+  // Test oracle: closed-form future value with monthly compounding and end-of-month deposits,
+  // computed independently of the app's month-by-month loops
+  function fvOracle(PV, PMT, ratePct, months) {
+    const r = ratePct / 100 / 12;
+    if (r === 0) return PV + PMT * months;
+    const g = Math.pow(1 + r, months);
+    return PV * g + PMT * (g - 1) / r;
+  }
+
+  // The saved-scenario format from PLAN.md, as code
+  const KNOWN_FIELDS = ['name', 'principal', 'monthly', 'rate', 'years', 'goal', 'inflation', 'rateLow', 'rateHigh', 'compare'];
+  const midOf = (low, high) => Math.round(((low + high) / 2) * 100) / 100;
+
+  function validateScenario(s) {
+    const errors = [];
+    const isNum = (v) => typeof v === 'number' && Number.isFinite(v);
+    if (typeof s.name !== 'string') errors.push('name must be a string');
+    for (const f of ['principal', 'monthly', 'goal']) {
+      if (!isNum(s[f]) || s[f] < 0) errors.push(`${f} must be a number ≥ 0`);
+    }
+    if (!isNum(s.rate)) errors.push('rate must be a number');
+    if (!Number.isInteger(s.years) || s.years < 1) errors.push('years must be an integer ≥ 1');
+    if ('inflation' in s && !isNum(s.inflation)) errors.push('inflation must be a number when present');
+    if ('compare' in s && typeof s.compare !== 'boolean') errors.push('compare must be true or false when present');
+
+    const hasLow = 'rateLow' in s;
+    const hasHigh = 'rateHigh' in s;
+    if (hasLow !== hasHigh) errors.push('rateLow and rateHigh must both be present or both missing');
+    if (hasLow && hasHigh) {
+      if (!isNum(s.rateLow) || !isNum(s.rateHigh)) errors.push('rateLow and rateHigh must be numbers');
+      else if (s.rateLow > s.rateHigh) errors.push('rateLow must not be above rateHigh');
+      else if (s.rate !== midOf(s.rateLow, s.rateHigh)) errors.push(`rate must be the mid estimate ${midOf(s.rateLow, s.rateHigh)}, got ${s.rate}`);
+    }
+
+    const unknown = Object.keys(s).filter(k => !KNOWN_FIELDS.includes(k));
+    if (unknown.length) errors.push(`fields not in PLAN.md: ${unknown.join(', ')}`);
+    return errors;
+  }
+
+  function runOracleTests(app) {
+    const G = 'Oracle: engines match the closed-form formula';
+    const cases = [
+      [45000, 800, 8, 25], [25000, 1500, 11, 20], [10000, 400, 6, 30],
+      [0, 500, 7, 40], [100000, 0, 5, 10], [1000, 100, 0, 5], [45000, 800, 20, 50]
+    ];
+    for (const [PV, PMT, rate, years] of cases) {
+      const label = `$${PV} start, $${PMT}/mo, ${rate}%, ${years} yrs`;
+      const months = years * 12;
+      const expected = fvOracle(PV, PMT, rate, months);
+
+      const path = app.simulatePath(PV, PMT, rate, years, Infinity, PMT);
+      check(G, `simulatePath (main calculator): ${label}`, close(path.balance, expected),
+        `got ${path.balance}, formula gives ${expected}`);
+
+      const yearsOk = path.yearBreakdown.every((y, i) => close(y.balance, fvOracle(PV, PMT, rate, (i + 1) * 12)));
+      check(G, `simulatePath year-by-year rows: ${label}`, yearsOk && path.yearBreakdown.length === years);
+
+      check(G, `simulatePath total invested: ${label}`, close(path.invested, PV + PMT * months),
+        `got ${path.invested}, expected ${PV + PMT * months}`);
+
+      const cmp = app.simulateScenario({ name: 'x', principal: PV, monthly: PMT, rate, years, goal: Infinity });
+      check(G, `simulateScenario (comparison): ${label}`, close(cmp.balance, expected),
+        `got ${cmp.balance}, formula gives ${expected}`);
+    }
+
+    // Time to goal: the first month whose formula balance reaches the goal
+    for (const [PV, PMT, rate, years, goal] of [[45000, 800, 8, 25, 1000000], [25000, 1500, 11, 20, 2000000], [10000, 400, 6, 30, 100000]]) {
+      const m = app.simulatePath(PV, PMT, rate, years, goal, PMT).monthReachedGoal;
+      const ok = m === null
+        ? fvOracle(PV, PMT, rate, years * 12) < goal
+        : fvOracle(PV, PMT, rate, m) >= goal && (m === 1 || fvOracle(PV, PMT, rate, m - 1) < goal);
+      check(G, `Goal month for $${goal.toLocaleString()} goal (${PV}/${PMT}/${rate}%): ${m === null ? 'not reached' : 'month ' + m}`, ok);
+    }
+  }
+
+  function runMetamorphicTests(app) {
+    const G = 'Metamorphic relations: properties that must hold';
+    const sim = (PV, PMT, rate, years, goal = Infinity, boost = PMT) => app.simulatePath(PV, PMT, rate, years, goal, boost);
+
+    const zero = sim(20000, 300, 0, 15);
+    check(G, '0% return adds no growth: balance = principal + monthly × months',
+      close(zero.balance, 20000 + 300 * 180) && close(zero.interest, 0), `balance ${zero.balance}, interest ${zero.interest}`);
+
+    const single = sim(0, 400, 9, 30).balance;
+    const doubled = sim(0, 800, 9, 30).balance;
+    check(G, 'With a $0 start, doubling the monthly contribution doubles the balance', close(doubled, 2 * single),
+      `${doubled} vs 2 × ${single}`);
+
+    const base = sim(45000, 800, 8, 25, 1000000, 1000);
+    const scaled = sim(45000 * 3, 800 * 3, 8, 25, 1000000 * 3, 1000 * 3);
+    check(G, 'Scaling every dollar amount by 3 scales the balance by 3', close(scaled.balance, 3 * base.balance));
+    check(G, 'Scaling every dollar amount by 3 leaves both goal months the same',
+      scaled.monthReachedGoal === base.monthReachedGoal && scaled.boostMonthReached === base.boostMonthReached,
+      `goal ${base.monthReachedGoal} → ${scaled.monthReachedGoal}, boost ${base.boostMonthReached} → ${scaled.boostMonthReached}`);
+
+    const rates = [1, 2, 4, 6, 8, 10, 12, 15, 20];
+    const balances = rates.map(r => sim(10000, 500, r, 20).balance);
+    check(G, 'A higher return always gives a higher balance (1% to 20%)', balances.every((b, i) => i === 0 || b > balances[i - 1]));
+    check(G, 'Total invested does not depend on the return rate',
+      rates.every(r => close(sim(10000, 500, r, 20).invested, 10000 + 500 * 240)));
+
+    const noBoost = sim(45000, 800, 8, 25, 1000000, 800);
+    check(G, 'A $0 What-If boost reaches the goal in the same month as no boost',
+      noBoost.boostMonthReached === noBoost.monthReachedGoal);
+
+    const withBoost = sim(45000, 800, 8, 25, 1000000, 1000);
+    check(G, 'A positive boost never reaches the goal later',
+      withBoost.boostMonthReached !== null && withBoost.boostMonthReached <= withBoost.monthReachedGoal);
+
+    const short = sim(30000, 600, 7, 10).yearBreakdown;
+    const long = sim(30000, 600, 7, 30).yearBreakdown;
+    check(G, 'A longer horizon does not change the earlier years', short.every((y, i) => close(y.balance, long[i].balance)));
+
+    const goalMonths = [200000, 400000, 600000, 800000].map(g => sim(45000, 800, 8, 40, g).monthReachedGoal);
+    check(G, 'A bigger goal is never reached sooner', goalMonths.every((m, i) => i === 0 || m >= goalMonths[i - 1]),
+      goalMonths.join(', '));
+  }
+
+  function runContractTests(app, examples) {
+    const G = 'Contract: the saved-scenario format in PLAN.md';
+    const doc = app.document;
+
+    // The validator itself must reject broken scenarios, or a pass means nothing
+    const good = examples[0].scenario;
+    const broken = [
+      ['only rateLow', { ...good, rateLow: 6 }],
+      ['rate not the mid', { ...good, rateLow: 6, rateHigh: 10, rate: 9 }],
+      ['years not an integer', { ...good, years: 2.5 }],
+      ['unknown field', { ...good, boost: 200 }],
+      ['missing principal', (({ principal, ...rest }) => rest)(good)]
+    ];
+    for (const [why, s] of broken) {
+      check(G, `Validator rejects a scenario with ${why}`, validateScenario(s).length > 0);
+    }
+
+    for (const { about, scenario: s } of examples) {
+      const errors = validateScenario(s);
+      check(G, `Example follows the format: ${about}`, errors.length === 0, errors.join('\n'));
+
+      // Both engines must agree, since the comparison has its own copy of the loop
+      const cmp = app.simulateScenario(s);
+      const main = app.simulatePath(s.principal, s.monthly, s.rate, s.years, s.goal, s.monthly);
+      check(G, `Comparison engine agrees with main engine: ${about}`,
+        close(cmp.balance, main.balance) && close(cmp.invested, main.invested) && cmp.monthReachedGoal === main.monthReachedGoal,
+        `comparison ${cmp.balance} / goal month ${cmp.monthReachedGoal}, main ${main.balance} / goal month ${main.monthReachedGoal}`);
+
+      const expectedInflation = s.inflation ?? 2.5;
+      check(G, `Inflation is ${expectedInflation}%${'inflation' in s ? '' : ' (default for old saves)'}: ${about}`,
+        cmp.inflation === expectedInflation && close(cmp.real, cmp.balance / Math.pow(1 + expectedInflation / 100, s.years)));
+    }
+
+    // Both sides of the page show the same numbers for the same scenario
+    const set = (id, v) => { doc.getElementById(id).value = v; };
+    const text = (id) => doc.getElementById(id).textContent.trim();
+    for (const { about, scenario: s } of examples) {
+      const isRange = 'rateLow' in s;
+      if (!isRange && (s.rate < 1 || s.rate > 20)) {
+        check(G, `Main calculator and comparison show the same numbers: ${about}`, true);
+        groups[G].lastChild.textContent += ' (skipped: the return slider only goes from 1% to 20%)';
+        continue;
+      }
+      set('initialPrincipal', s.principal);
+      set('monthlyContribution', s.monthly);
+      set('timelineYears', s.years);
+      set('targetGoal', s.goal);
+      set('inflationRate', s.inflation ?? 2.5);
+      doc.getElementById('useReturnRange').checked = isRange;
+      if (isRange) { set('returnLow', s.rateLow); set('returnHigh', s.rateHigh); }
+      else set('annualReturn', s.rate);
+      app.calculateTrajectory();
+
+      app.renderComparison([{ ...s, compare: true }, { ...s, name: 'copy', compare: true }]);
+      const cell = (label) => {
+        const row = [...doc.querySelectorAll('#compareTableBody tr')].find(r => r.cells[0].textContent.trim() === label);
+        return row ? row.cells[1].textContent.replace('★', '').trim() : '(row missing)';
+      };
+
+      const pairs = [
+        ['projected value', text('metricFutureValue'), cell('Projected value')],
+        ["today's dollars", text('metricInflationVal').replace(" in today's dollars", '').split(' ')[0], cell("In today's dollars")],
+        ['time to goal', text('metricGoalTime'), cell('Time to goal')]
+      ];
+      const mismatches = pairs.filter(([, a, b]) => a !== b);
+      check(G, `Main calculator and comparison show the same numbers: ${about}`, mismatches.length === 0,
+        mismatches.map(([what, a, b]) => `${what}: main "${a}", comparison "${b}"`).join('\n'));
+    }
+
+    // What the Save button writes must follow the format too.
+    // Uses the real vault, so the saved list is put back exactly as it was.
+    const KEY = 'tcss490_artifact4_vault';
+    const before = app.localStorage.getItem(KEY);
+    try {
+      const save = (name) => {
+        set('scenarioName', name);
+        doc.getElementById('btnSaveScenario').click();
+        return JSON.parse(app.localStorage.getItem(KEY))[0];
+      };
+
+      set('initialPrincipal', 45000); set('monthlyContribution', 800); set('timelineYears', 25);
+      set('targetGoal', 1000000); set('inflationRate', 3.5);
+
+      doc.getElementById('useReturnRange').checked = false;
+      set('annualReturn', 7.3);
+      const single = save('test single');
+      check(G, 'Save button (single rate) writes a valid scenario', validateScenario(single).length === 0,
+        validateScenario(single).join('\n'));
+      check(G, 'Save button (single rate) keeps the rate and inflation and writes no range',
+        single.rate === 7.3 && single.inflation === 3.5 && !('rateLow' in single), JSON.stringify(single));
+
+      doc.getElementById('useReturnRange').checked = true;
+      set('returnLow', 6.3); set('returnHigh', 9.9);
+      const ranged = save('test range');
+      check(G, 'Save button (range) writes a valid scenario', validateScenario(ranged).length === 0,
+        validateScenario(ranged).join('\n'));
+      check(G, 'Save button (range) stores rateLow, rateHigh and the mid estimate as rate',
+        ranged.rateLow === 6.3 && ranged.rateHigh === 9.9 && ranged.rate === midOf(6.3, 9.9), JSON.stringify(ranged));
+    } finally {
+      if (before === null) app.localStorage.removeItem(KEY);
+      else app.localStorage.setItem(KEY, before);
+      app.loadSavedScenarios();
+    }
+    check(G, 'Your saved scenarios were put back unchanged', app.localStorage.getItem(KEY) === before);
+  }
+
+  async function run() {
+    // The query string skips the browser cache, so the tests always run the current index.html
+    const frame = document.getElementById('app');
+    await new Promise(resolve => {
+      frame.addEventListener('load', resolve, { once: true });
+      frame.src = `../index.html?nocache=${Date.now()}`;
+    });
+    const app = frame.contentWindow;
+
+    try {
+      const examples = await (await fetch('scenario-examples.json', { cache: 'no-store' })).json();
+      runOracleTests(app);
+      runMetamorphicTests(app);
+      runContractTests(app, examples);
+    } catch (err) {
+      check('Test run', 'Tests ran to the end', false, err.stack || String(err));
+    }
+
+    const summary = document.getElementById('summary');
+    summary.textContent = failed === 0 ? `All ${passed} checks passed` : `${failed} of ${passed + failed} checks failed`;
+    summary.className = failed === 0 ? 'pass' : 'fail';
+    document.title = `${failed === 0 ? 'PASS' : 'FAIL'} | Simulator Tests`;
+  }
+
+  run();
+</script>
+</body>
+</html>

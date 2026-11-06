@@ -1,0 +1,68 @@
+[
+  {
+    "about": "Single rate, every field present",
+    "scenario": {
+      "name": "Client Baseline",
+      "principal": 45000,
+      "monthly": 800,
+      "rate": 8,
+      "years": 25,
+      "goal": 1000000,
+      "inflation": 2.5,
+      "compare": true
+    }
+  },
+  {
+    "about": "Return range: rate is the mid estimate of rateLow and rateHigh",
+    "scenario": {
+      "name": "Co-Worker 401k (range)",
+      "principal": 45000,
+      "monthly": 800,
+      "rate": 8,
+      "rateLow": 6,
+      "rateHigh": 10,
+      "years": 25,
+      "goal": 1000000,
+      "inflation": 2.5,
+      "compare": true
+    }
+  },
+  {
+    "about": "Saved before 10/30: no inflation and no compare field",
+    "scenario": {
+      "name": "Old save",
+      "principal": 10000,
+      "monthly": 400,
+      "rate": 6,
+      "years": 30,
+      "goal": 500000
+    }
+  },
+  {
+    "about": "Uneven range: the mid estimate is rounded to 2 decimals",
+    "scenario": {
+      "name": "Uneven range",
+      "principal": 25000,
+      "monthly": 1500,
+      "rate": 10.05,
+      "rateLow": 8.3,
+      "rateHigh": 11.8,
+      "years": 20,
+      "goal": 2000000,
+      "inflation": 3,
+      "compare": false
+    }
+  },
+  {
+    "about": "Goal already met at the start, 0% return, name containing HTML",
+    "scenario": {
+      "name": "<img src=x onerror=alert(1)> \"quoted\"",
+      "principal": 50000,
+      "monthly": 0,
+      "rate": 0,
+      "years": 1,
+      "goal": 10000,
+      "inflation": 0
+    }
+  }
+]
