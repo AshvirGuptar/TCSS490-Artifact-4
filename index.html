@@ -186,8 +186,40 @@
                 </label>
                 <span id="annualReturnValue" class="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">8.0%</span>
               </div>
-              <input type="range" id="annualReturn" min="1" max="20" step="0.1" value="8.0"
-                     class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-600" />
+              <div id="singleReturnWrap">
+                <input type="range" id="annualReturn" min="1" max="20" step="0.1" value="8.0"
+                       class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-600" />
+              </div>
+
+              <!-- Return range (low / high); the mid estimate is halfway between -->
+              <div id="rangeReturnWrap" class="hidden space-y-2">
+                <div>
+                  <div class="flex justify-between items-center text-[11px] font-mono font-semibold mb-0.5">
+                    <label for="returnLow" class="text-rose-500">Low</label>
+                    <span id="returnLowValue" class="text-rose-500">6%</span>
+                  </div>
+                  <input type="range" id="returnLow" min="1" max="20" step="0.1" value="6"
+                         class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-rose-500" />
+                </div>
+                <div>
+                  <div class="flex justify-between items-center text-[11px] font-mono font-semibold mb-0.5">
+                    <label for="returnHigh" class="text-emerald-500">High</label>
+                    <span id="returnHighValue" class="text-emerald-500">10%</span>
+                  </div>
+                  <input type="range" id="returnHigh" min="1" max="20" step="0.1" value="10"
+                         class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+                </div>
+              </div>
+
+              <div class="mt-2 flex items-center gap-1.5 text-[11px] font-semibold text-gray-600 dark:text-gray-400">
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" id="useReturnRange" class="accent-blue-600">
+                  <span>Use a range (low / mid / high)</span>
+                </label>
+                <button type="button" onclick="openGuide('range')" class="text-gray-400 hover:text-blue-500 transition-colors" title="Virtual Guide">
+                  <i class="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+                </button>
+              </div>
             </div>
 
             <!-- Timeline Horizon (Years) -->
@@ -253,6 +285,7 @@
               <div id="whatIfTimeSaved" class="mt-1 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
                 --
               </div>
+              <div id="whatIfRange" class="hidden mt-0.5 text-[10px] font-mono font-semibold"></div>
             </div>
 
           </form>
@@ -312,6 +345,7 @@
             <div id="metricFutureValue" class="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 font-mono">
               $0.00
             </div>
+            <div id="metricFutureRange" class="hidden mt-0.5 text-[11px] font-mono font-semibold"></div>
             <!-- Inflation Adjusted Subtext -->
             <div id="metricInflationVal" class="mt-1 text-xs font-mono text-amber-500 font-semibold">
               -- in today's dollars
@@ -330,6 +364,7 @@
             <div id="metricGoalTime" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
               --
             </div>
+            <div id="metricGoalRange" class="hidden mt-0.5 text-[11px] font-mono font-semibold"></div>
             <div class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
               <span>Target:</span>
               <span id="metricGoalTargetLabel" class="font-mono font-semibold text-gray-700 dark:text-gray-300">$1,000,000</span>
@@ -355,12 +390,19 @@
             <div id="metricTotalInterest" class="text-xl font-bold text-indigo-600 dark:text-indigo-400 font-mono">
               $0.00
             </div>
+            <div id="metricInterestRange" class="hidden mt-0.5 text-[11px] font-mono font-semibold"></div>
             <p id="metricGrowthRatio" class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-mono font-semibold">
               -- % from interest
             </p>
           </div>
 
         </div>
+
+        <!-- Shown only when a return range is used -->
+        <p id="rangeNote" class="hidden -mt-2 text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+          <i class="fa-solid fa-circle-info text-blue-500"></i>
+          <span id="rangeNoteText"></span>
+        </p>
 
         <!-- Visual SVG Growth Chart -->
         <div class="bg-white dark:bg-gray-800/80 p-5 rounded-2xl border border-gray-200 dark:border-gray-700/80 shadow-sm space-y-3">
@@ -369,7 +411,9 @@
               <i class="fa-solid fa-chart-area text-blue-500"></i> Trajectory Growth Curve
             </h3>
             <div class="flex items-center gap-3 text-[10px] font-mono font-semibold">
-              <span class="flex items-center gap-1 text-blue-500"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Balance</span>
+              <span id="legendLow" class="hidden items-center gap-1 text-rose-500"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Low</span>
+              <span class="flex items-center gap-1 text-blue-500"><span class="w-2 h-2 rounded-full bg-blue-500"></span> <span id="legendMidLabel">Balance</span></span>
+              <span id="legendHigh" class="hidden items-center gap-1 text-emerald-500"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> High</span>
               <span class="flex items-center gap-1 text-gray-400"><span class="w-2 h-2 rounded-full bg-gray-400"></span> Principal</span>
             </div>
           </div>
@@ -397,7 +441,9 @@
                   <th class="pb-3 font-semibold">Year</th>
                   <th class="pb-3 font-semibold">Total Invested</th>
                   <th class="pb-3 font-semibold">Total Interest to Date</th>
-                  <th class="pb-3 font-semibold text-right">End Balance</th>
+                  <th id="thLow" class="hidden pb-3 font-semibold text-right text-rose-500">Low</th>
+                  <th id="thBalance" class="pb-3 font-semibold text-right">End Balance</th>
+                  <th id="thHigh" class="hidden pb-3 font-semibold text-right text-emerald-500">High</th>
                 </tr>
               </thead>
               <tbody id="trajectoryTableBody" class="divide-y divide-gray-100 dark:divide-gray-800/60">
@@ -615,6 +661,11 @@
         body: 'Shows what your future portfolio value will actually buy in terms of real purchasing power today, adjusting for inflation.',
         formula: 'Real Value = Future Value / (1 + Inflation Rate)^Years'
       },
+      range: {
+        title: 'Return Range (Low / Mid / High)',
+        body: 'Instead of one return rate, pick a low and a high rate (for example 8% to 12%). The calculator shows results at the low rate (red), the high rate (green) and the mid estimate halfway between (blue). Each one assumes a steady return every year; real yearly returns go up and down, so treat the range as a guide, not a guarantee. Saved scenarios keep the range, but the side-by-side comparison uses the mid estimate.',
+        formula: 'Mid = (Low + High) / 2'
+      },
       cagr: {
         title: 'Compound Annual Growth Rate (CAGR)',
         body: 'The annualized rate of return earned on an investment over a multi-year holding period, smoothing out year-to-year market volatility.',
@@ -737,12 +788,15 @@
     function applyRate(rate, sourceLabel) {
       const rounded = Number(rate.toFixed(1));
       const applied = Math.max(RATE_MIN, Math.min(RATE_MAX, rounded));
+      // The helper produces one rate, so it switches the calculator back to a single rate
+      const rangeMsg = useReturnRange.checked ? ' Return range turned off.' : '';
+      useReturnRange.checked = false;
       inputReturn.value = applied;
       calculateTrajectory();
       if (applied !== rounded) {
-        showRateStatus(`${sourceLabel} is ${rounded}%, outside the ${RATE_MIN}–${RATE_MAX}% range, so ${applied}% was applied.`, true);
+        showRateStatus(`${sourceLabel} is ${rounded}%, outside the ${RATE_MIN}–${RATE_MAX}% range, so ${applied}% was applied.${rangeMsg}`, true);
       } else {
-        showRateStatus(`${sourceLabel} is ${rounded}%. Applied to Expected Annual Return.`, false);
+        showRateStatus(`${sourceLabel} is ${rounded}%. Applied to Expected Annual Return.${rangeMsg}`, false);
       }
     }
 
@@ -776,62 +830,132 @@
     }
 
     // ===== Core engine, metrics, chart and table (owner: Ashvir) =====
-    // Core Compound Interest Mathematical Calculation Engine
-    function calculateTrajectory() {
-      // Negative dollar amounts are treated as 0
-      const PV = Math.max(0, parseFloat(inputPrincipal.value) || 0);
-      const PMT = Math.max(0, parseFloat(inputContribution.value) || 0);
-      const annualRate = (parseFloat(inputReturn.value) || 0) / 100;
-      const r = annualRate / 12;
-      const years = parseInt(inputYears.value) || 1;
-      const targetGoal = Math.max(0, parseFloat(inputGoal.value) || 0);
-      const inflationRate = (parseFloat(inputInflation.value) || 0) / 100;
-      const boostAmount = Math.max(0, parseFloat(inputBoost.value) || 0);
-      const boostPMT = PMT + boostAmount;
+    // Return range elements and colors (low = red, mid = blue, high = green)
+    const useReturnRange = document.getElementById('useReturnRange');
+    const inputReturnLow = document.getElementById('returnLow');
+    const inputReturnHigh = document.getElementById('returnHigh');
+    const lblReturnLow = document.getElementById('returnLowValue');
+    const lblReturnHigh = document.getElementById('returnHighValue');
+    const singleReturnWrap = document.getElementById('singleReturnWrap');
+    const rangeReturnWrap = document.getElementById('rangeReturnWrap');
+    const metricFutureRange = document.getElementById('metricFutureRange');
+    const metricGoalRange = document.getElementById('metricGoalRange');
+    const metricInterestRange = document.getElementById('metricInterestRange');
+    const whatIfRange = document.getElementById('whatIfRange');
+    const rangeNote = document.getElementById('rangeNote');
+    const rangeNoteText = document.getElementById('rangeNoteText');
+    const RANGE_COLORS = { low: '#f43f5e', mid: '#3b82f6', high: '#10b981' };
 
-      // Update Labels
-      lblPrincipal.textContent = formatCurrency(PV);
-      lblContribution.textContent = formatCurrency(PMT);
-      lblReturn.textContent = `${inputReturn.value}%`;
-      lblYears.textContent = `${years} ${years === 1 ? 'Year' : 'Years'}`;
-      lblGoal.textContent = formatCurrency(targetGoal);
-      lblInflation.textContent = `${inputInflation.value}%`;
-      lblBoost.textContent = `+${formatCurrency(boostAmount)}/mo`;
+    const pct = (x) => `${Number(Number(x).toFixed(2))}%`;
+    const midOf = (low, high) => Math.round(((low + high) / 2) * 100) / 100;
+    const colored = (cls, text) => `<span class="${cls}">${text}</span>`;
+    const lowHighLine = (lowText, highText) =>
+      `${colored('text-rose-500', `Low: ${lowText}`)} <span class="text-gray-400">·</span> ${colored('text-emerald-500', `High: ${highText}`)}`;
 
-      let currentBalance = PV;
-      let totalContributions = PV;
-      let yearBreakdown = [];
+    // Simulates one return rate month by month, with and without the What-If boost
+    function simulatePath(PV, PMT, ratePct, years, targetGoal, boostPMT) {
+      const r = (ratePct / 100) / 12;
+      let balance = PV;
+      let invested = PV;
+      let boostBalance = PV;
       let monthReachedGoal = null;
       let boostMonthReached = null;
-      const totalMonths = years * 12;
+      const yearBreakdown = [];
 
-      let boostBalance = PV;
-      for (let m = 1; m <= totalMonths; m++) {
-        currentBalance = currentBalance * (1 + r) + PMT;
-        totalContributions += PMT;
-        if (monthReachedGoal === null && currentBalance >= targetGoal) monthReachedGoal = m;
+      for (let m = 1; m <= years * 12; m++) {
+        balance = balance * (1 + r) + PMT;
+        invested += PMT;
+        if (monthReachedGoal === null && balance >= targetGoal) monthReachedGoal = m;
 
-        // What-If Boost calculation
         boostBalance = boostBalance * (1 + r) + boostPMT;
         if (boostMonthReached === null && boostBalance >= targetGoal) boostMonthReached = m;
 
         if (m % 12 === 0) {
           yearBreakdown.push({
             year: m / 12,
-            invested: totalContributions,
-            interest: Math.max(0, currentBalance - totalContributions),
-            balance: currentBalance
+            invested,
+            interest: Math.max(0, balance - invested),
+            balance
           });
         }
       }
+      return { ratePct, balance, invested, interest: balance - invested, monthReachedGoal, boostMonthReached, yearBreakdown };
+    }
 
-      const netFutureValue = currentBalance;
-      const netInterest = netFutureValue - totalContributions;
+    // Short What-If summary used for the low and high ends of a range
+    function boostShort(path) {
+      if (path.monthReachedGoal !== null && path.boostMonthReached !== null && path.boostMonthReached < path.monthReachedGoal) {
+        const saved = path.monthReachedGoal - path.boostMonthReached;
+        const y = Math.floor(saved / 12);
+        return `${y > 0 ? y + 'y ' : ''}${saved % 12}m sooner`;
+      }
+      if (path.monthReachedGoal === null && path.boostMonthReached !== null) return 'only with boost';
+      if (path.monthReachedGoal === null) return 'not reached';
+      return 'no change';
+    }
+
+    // Shows the right return inputs and keeps the range valid (low never above high)
+    function syncReturnRangeUi() {
+      const on = useReturnRange.checked;
+      singleReturnWrap.classList.toggle('hidden', on);
+      rangeReturnWrap.classList.toggle('hidden', !on);
+      [metricFutureRange, metricGoalRange, metricInterestRange, whatIfRange, rangeNote,
+       document.getElementById('thLow'), document.getElementById('thHigh')].forEach(el => el.classList.toggle('hidden', !on));
+      ['legendLow', 'legendHigh'].forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.toggle('hidden', !on);
+        el.classList.toggle('flex', on);
+      });
+      document.getElementById('legendMidLabel').textContent = on ? 'Mid' : 'Balance';
+      document.getElementById('thBalance').textContent = on ? 'Mid' : 'End Balance';
+    }
+
+    // Core Compound Interest Mathematical Calculation Engine
+    function calculateTrajectory() {
+      // Negative dollar amounts are treated as 0
+      const PV = Math.max(0, parseFloat(inputPrincipal.value) || 0);
+      const PMT = Math.max(0, parseFloat(inputContribution.value) || 0);
+      const years = parseInt(inputYears.value) || 1;
+      const targetGoal = Math.max(0, parseFloat(inputGoal.value) || 0);
+      const inflationRate = (parseFloat(inputInflation.value) || 0) / 100;
+      const boostAmount = Math.max(0, parseFloat(inputBoost.value) || 0);
+      const boostPMT = PMT + boostAmount;
+
+      // Single rate, or low / mid / high when a range is used
+      const rangeOn = useReturnRange.checked;
+      const lowPct = parseFloat(inputReturnLow.value) || 0;
+      const highPct = parseFloat(inputReturnHigh.value) || 0;
+      const midPct = rangeOn ? midOf(lowPct, highPct) : (parseFloat(inputReturn.value) || 0);
+      syncReturnRangeUi();
+
+      // Update Labels
+      lblPrincipal.textContent = formatCurrency(PV);
+      lblContribution.textContent = formatCurrency(PMT);
+      lblReturn.textContent = rangeOn ? `${pct(lowPct)} – ${pct(highPct)} (mid ${pct(midPct)})` : `${inputReturn.value}%`;
+      lblReturnLow.textContent = pct(lowPct);
+      lblReturnHigh.textContent = pct(highPct);
+      lblYears.textContent = `${years} ${years === 1 ? 'Year' : 'Years'}`;
+      lblGoal.textContent = formatCurrency(targetGoal);
+      lblInflation.textContent = `${inputInflation.value}%`;
+      lblBoost.textContent = `+${formatCurrency(boostAmount)}/mo`;
+
+      // The main numbers always come from the mid path (the single rate when no range is used)
+      const mid = simulatePath(PV, PMT, midPct, years, targetGoal, boostPMT);
+      const low = rangeOn ? simulatePath(PV, PMT, lowPct, years, targetGoal, boostPMT) : null;
+      const high = rangeOn ? simulatePath(PV, PMT, highPct, years, targetGoal, boostPMT) : null;
+
+      const netFutureValue = mid.balance;
+      const netInterest = mid.interest;
+      const totalContributions = mid.invested;
+      const monthReachedGoal = mid.monthReachedGoal;
+      const boostMonthReached = mid.boostMonthReached;
 
       // Inflation Adjusted (Purchasing Power in Today's Dollars)
       const inflFactor = Math.pow(1 + inflationRate, years);
       const realFutureValue = netFutureValue / inflFactor;
-      metricInflationVal.textContent = `${formatCurrency(realFutureValue)} in today's dollars`;
+      metricInflationVal.textContent = rangeOn
+        ? `${formatCurrency(realFutureValue)} in today's dollars (${formatCurrency(low.balance / inflFactor)} – ${formatCurrency(high.balance / inflFactor)})`
+        : `${formatCurrency(realFutureValue)} in today's dollars`;
 
       // What-If Time Saved calculation
       if (boostAmount === 0) {
@@ -848,6 +972,7 @@
       } else {
         whatIfTimeSaved.textContent = `Boost does not change the month you reach your goal`;
       }
+      whatIfRange.innerHTML = rangeOn && boostAmount > 0 ? lowHighLine(boostShort(low), boostShort(high)) : '';
 
       // Update Primary Metrics
       metricFV.textContent = formatCurrency(netFutureValue);
@@ -859,53 +984,63 @@
       metricGrowthRatio.textContent = `${growthPercent}% of total portfolio came from interest`;
 
       metricGoalTargetLabel.textContent = formatCurrency(targetGoal);
-      if (monthReachedGoal !== null) {
-        const goalY = Math.floor(monthReachedGoal / 12);
-        const goalM = monthReachedGoal % 12;
-        metricGoalTime.textContent = goalY === 0 ? `${goalM} mos` : goalM === 0 ? `${goalY} yrs` : `${goalY}y ${goalM}m`;
-      } else {
-        metricGoalTime.textContent = `> ${years} yrs`;
+      metricGoalTime.textContent = formatGoalTime(monthReachedGoal, years);
+
+      if (rangeOn) {
+        metricFutureRange.innerHTML = lowHighLine(formatCurrency(low.balance), formatCurrency(high.balance));
+        metricGoalRange.innerHTML = lowHighLine(formatGoalTime(low.monthReachedGoal, years), formatGoalTime(high.monthReachedGoal, years));
+        metricInterestRange.innerHTML = lowHighLine(formatCurrency(Math.max(0, low.interest)), formatCurrency(Math.max(0, high.interest)));
+        rangeNoteText.textContent = `Large numbers show the mid estimate (${pct(midPct)}); red is the low rate (${pct(lowPct)}) and green is the high rate (${pct(highPct)}). Each assumes a steady return every year, and real returns vary. Saved scenarios keep the range, but the side-by-side comparison uses the mid estimate.`;
       }
 
       // Populate Table
       tableBody.innerHTML = '';
-      yearBreakdown.forEach(item => {
+      mid.yearBreakdown.forEach((item, i) => {
         const row = document.createElement('tr');
         row.className = 'hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors';
         row.innerHTML = `
           <td class="py-2.5 text-gray-700 dark:text-gray-300 font-semibold">Yr ${item.year}</td>
           <td class="py-2.5 text-gray-600 dark:text-gray-400">${formatCurrency(item.invested)}</td>
           <td class="py-2.5 text-indigo-600 dark:text-indigo-400">+${formatCurrency(item.interest)}</td>
-          <td class="py-2.5 text-right font-bold text-gray-900 dark:text-white">${formatCurrency(item.balance)}</td>
+          ${rangeOn ? `<td class="py-2.5 pl-3 text-right text-rose-500">${formatCurrency(low.yearBreakdown[i].balance)}</td>` : ''}
+          <td class="py-2.5 pl-3 text-right font-bold text-gray-900 dark:text-white">${formatCurrency(item.balance)}</td>
+          ${rangeOn ? `<td class="py-2.5 pl-3 text-right text-emerald-500">${formatCurrency(high.yearBreakdown[i].balance)}</td>` : ''}
         `;
         tableBody.appendChild(row);
       });
 
       // Render SVG Growth Curve
-      renderSvgChart(yearBreakdown, netFutureValue);
+      renderSvgChart(mid.yearBreakdown, rangeOn ? high.balance : netFutureValue, low, high);
     }
 
-    // SVG Growth Chart Renderer
-    function renderSvgChart(data, maxVal) {
+    // SVG Growth Chart Renderer (adds a shaded low-to-high band when a range is used)
+    function renderSvgChart(data, maxVal, low, high) {
       if (!data || data.length === 0) return;
       const maxB = maxVal || 1;
       const width = 500;
       const height = 120;
-      
-      let points = data.map((d, i) => {
-        const x = (i / (data.length - 1 || 1)) * width;
-        const y = height - (d.balance / maxB) * height;
+      const toPoints = (rows, key) => rows.map((d, i) => {
+        const x = (i / (rows.length - 1 || 1)) * width;
+        const y = height - (d[key] / maxB) * height;
         return `${x},${Math.max(5, y)}`;
       });
 
-      let principalPoints = data.map((d, i) => {
-        const x = (i / (data.length - 1 || 1)) * width;
-        const y = height - (d.invested / maxB) * height;
-        return `${x},${Math.max(5, y)}`;
-      });
+      const points = toPoints(data, 'balance');
+      const principalPoints = toPoints(data, 'invested');
+
+      let rangeSvg = '';
+      if (low && high) {
+        const lowPoints = toPoints(low.yearBreakdown, 'balance');
+        const highPoints = toPoints(high.yearBreakdown, 'balance');
+        rangeSvg = `
+          <polygon fill="${RANGE_COLORS.mid}" fill-opacity="0.12" stroke="none" points="${highPoints.join(' ')} ${lowPoints.slice().reverse().join(' ')}" />
+          <polyline fill="none" stroke="${RANGE_COLORS.low}" stroke-width="2" points="${lowPoints.join(' ')}" />
+          <polyline fill="none" stroke="${RANGE_COLORS.high}" stroke-width="2" points="${highPoints.join(' ')}" />`;
+      }
 
       growthSvg.innerHTML = `
-        <polyline fill="none" stroke="#3b82f6" stroke-width="3" points="${points.join(' ')}" />
+        ${rangeSvg}
+        <polyline fill="none" stroke="${RANGE_COLORS.mid}" stroke-width="3" points="${points.join(' ')}" />
         <polyline fill="none" stroke="#9ca3af" stroke-width="2" stroke-dasharray="4" points="${principalPoints.join(' ')}" />
       `;
     }
@@ -915,8 +1050,31 @@
       input.addEventListener('input', calculateTrajectory);
     });
 
-    // Presets (each one also resets inflation and the What-If boost to their defaults)
-    const resetSecondaryInputs = () => { inputInflation.value = 2.5; inputBoost.value = 200; };
+    // Range sliders: moving one past the other pushes the other along
+    inputReturnLow.addEventListener('input', () => {
+      if (parseFloat(inputReturnLow.value) > parseFloat(inputReturnHigh.value)) inputReturnHigh.value = inputReturnLow.value;
+      calculateTrajectory();
+    });
+    inputReturnHigh.addEventListener('input', () => {
+      if (parseFloat(inputReturnHigh.value) < parseFloat(inputReturnLow.value)) inputReturnLow.value = inputReturnHigh.value;
+      calculateTrajectory();
+    });
+
+    // Turning the range on starts it 2% either side of the current rate;
+    // turning it off keeps the mid estimate as the single rate
+    useReturnRange.addEventListener('change', () => {
+      if (useReturnRange.checked) {
+        const current = parseFloat(inputReturn.value) || 8;
+        inputReturnLow.value = Math.max(RATE_MIN, current - 2);
+        inputReturnHigh.value = Math.min(RATE_MAX, current + 2);
+      } else {
+        inputReturn.value = midOf(parseFloat(inputReturnLow.value), parseFloat(inputReturnHigh.value));
+      }
+      calculateTrajectory();
+    });
+
+    // Presets (each one also resets inflation and the What-If boost to their defaults and turns off the return range)
+    const resetSecondaryInputs = () => { inputInflation.value = 2.5; inputBoost.value = 200; useReturnRange.checked = false; };
     document.getElementById('btnPresetCoworker').addEventListener('click', () => {
       inputPrincipal.value = 45000; inputContribution.value = 800; inputReturn.value = 8.0; inputYears.value = 25; inputGoal.value = 1000000;
       resetSecondaryInputs();
@@ -960,7 +1118,7 @@
               ${color ? `<span class="w-2 h-2 rounded-full shrink-0" style="background:${color}"></span>` : ''}
               <span class="truncate">${escapeHtml(s.name)}</span>
             </div>
-            <div class="text-[10px] font-mono text-gray-500">Start: ${formatCurrency(s.principal)} | Mo: ${formatCurrency(s.monthly)} | Return: ${s.rate}%</div>
+            <div class="text-[10px] font-mono text-gray-500">Start: ${formatCurrency(s.principal)} | Mo: ${formatCurrency(s.monthly)} | Return: ${s.rate}%${s.rateLow != null ? ` (range ${s.rateLow}–${s.rateHigh}%, mid used)` : ''}</div>
           </div>
           <div class="flex items-center gap-1.5 shrink-0">
             <label class="flex items-center gap-1 text-[10px] font-semibold text-gray-500 dark:text-gray-400 cursor-pointer">
@@ -981,7 +1139,14 @@
         name,
         principal: parseFloat(inputPrincipal.value) || 0,
         monthly: parseFloat(inputContribution.value) || 0,
-        rate: parseFloat(inputReturn.value) || 0,
+        // With a range, 'rate' is the mid estimate (used by the comparison); the range is kept too
+        rate: useReturnRange.checked
+          ? midOf(parseFloat(inputReturnLow.value), parseFloat(inputReturnHigh.value))
+          : (parseFloat(inputReturn.value) || 0),
+        ...(useReturnRange.checked && {
+          rateLow: parseFloat(inputReturnLow.value),
+          rateHigh: parseFloat(inputReturnHigh.value)
+        }),
         years: parseInt(inputYears.value) || 1,
         goal: parseFloat(inputGoal.value) || 0,
         inflation: parseFloat(inputInflation.value) || 0
@@ -1003,9 +1168,9 @@
         return;
       }
 
-      let csvContent = "Scenario Name,Starting Principal,Monthly Contribution,Annual Return Rate,Time Horizon (Years),Target Goal,Inflation Rate\n";
+      let csvContent = "Scenario Name,Starting Principal,Monthly Contribution,Annual Return Rate,Time Horizon (Years),Target Goal,Inflation Rate,Return Range Low,Return Range High\n";
       scenarios.forEach(s => {
-        csvContent += `"${String(s.name).replace(/"/g, '""')}",${s.principal},${s.monthly},${s.rate},${s.years},${s.goal},${s.inflation ?? ''}\n`;
+        csvContent += `"${String(s.name).replace(/"/g, '""')}",${s.principal},${s.monthly},${s.rate},${s.years},${s.goal},${s.inflation ?? ''},${s.rateLow ?? ''},${s.rateHigh ?? ''}\n`;
       });
 
       // A Blob keeps characters like '#' in scenario names from cutting the file short
@@ -1026,7 +1191,14 @@
         const s = scenarios[index];
         inputPrincipal.value = s.principal;
         inputContribution.value = s.monthly;
-        inputReturn.value = s.rate;
+        if (s.rateLow != null && s.rateHigh != null) {
+          useReturnRange.checked = true;
+          inputReturnLow.value = s.rateLow;
+          inputReturnHigh.value = s.rateHigh;
+        } else {
+          useReturnRange.checked = false;
+          inputReturn.value = s.rate;
+        }
         inputYears.value = s.years;
         inputGoal.value = s.goal;
         if (s.inflation !== undefined) inputInflation.value = s.inflation;
