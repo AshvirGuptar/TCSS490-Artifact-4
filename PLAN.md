@@ -47,7 +47,7 @@ Each section of `index.html` that has an owner is marked with an HTML/JS comment
 | :--- | :--- | :--- |
 | 10/25–10/29 | Base simulator built and deployed | Ashvir |
 | 10/30 | Plan written down (this file), comparison feature built, PR opened | Vanessa |
-| After merge | Show the co-worker the live site, log their feedback | Both |
+| 11/06 | Showed the co-worker the live site; they used it successfully and got a reliable forecast of their planned investments (logged in `CLAUDE.MD`) | Both |
 
 > Note: the base simulator was built before this plan was written down. This file records
 > how we are working from here on.
