@@ -9,8 +9,8 @@ A co-worker who is planning their own long-term investing (the "Client Baseline"
 $45k starting balance, $800/month). They asked to see how their money could grow, what it is
 worth after inflation, and how different savings plans stack up against each other.
 
-**Hand-off:** we show them the live site at https://ashvirguptar.github.io/TCSS490-Artifact-4/
-before the due date and record what they said in the log.
+**Hand-off (done 11/05):** we showed them the live site at https://ashvirguptar.github.io/TCSS490-Artifact-4/.
+They used the tool successfully and got a reliable forecast of their planned investments (see the log in `CLAUDE.MD`).
 
 ## What we are building
 
@@ -47,7 +47,7 @@ Each section of `index.html` that has an owner is marked with an HTML/JS comment
 | :--- | :--- | :--- |
 | 10/25–10/29 | Base simulator built and deployed | Ashvir |
 | 10/30 | Plan written down (this file), comparison feature built, PR opened | Vanessa |
-| After merge | Show the co-worker the live site, log their feedback | Both |
+| 11/05 | Showed the co-worker the live site; they used it successfully and got a reliable forecast of their planned investments (logged in `CLAUDE.MD`) | Both |
 
 > Note: the base simulator was built before this plan was written down. This file records
 > how we are working from here on.
